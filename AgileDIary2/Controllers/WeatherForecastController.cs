@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AgileDiary2.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace AgileDiary2.Controllers
 {
@@ -20,6 +23,8 @@ namespace AgileDiary2.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
+        private UserManager<ApplicationUser> _userManager;
+
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
@@ -28,6 +33,7 @@ namespace AgileDiary2.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

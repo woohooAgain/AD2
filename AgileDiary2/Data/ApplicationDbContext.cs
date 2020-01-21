@@ -17,5 +17,7 @@ namespace AgileDiary2.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        public DbSet<Sprint> Sprints { get; set; }
     }
 }
