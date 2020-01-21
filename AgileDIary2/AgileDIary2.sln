@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.161
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgileDIary2", "AgileDIary2.csproj", "{8D330A89-8808-4EE0-8196-AF363F275DC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgileDiary2", "AgileDiary2.csproj", "{48C1C081-F302-45C2-B072-FA135582DA81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8D330A89-8808-4EE0-8196-AF363F275DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D330A89-8808-4EE0-8196-AF363F275DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D330A89-8808-4EE0-8196-AF363F275DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D330A89-8808-4EE0-8196-AF363F275DC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48C1C081-F302-45C2-B072-FA135582DA81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48C1C081-F302-45C2-B072-FA135582DA81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48C1C081-F302-45C2-B072-FA135582DA81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48C1C081-F302-45C2-B072-FA135582DA81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {21779FDE-67D6-402E-87F9-E3DBE59D28DB}
+		SolutionGuid = {2204D3F9-0588-43A6-8489-A1893013E568}
 	EndGlobalSection
 EndGlobal

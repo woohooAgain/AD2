@@ -7,8 +7,8 @@
       "sslPort": 0
     },
     "iisExpress": {
-      "applicationUrl": "http://localhost:64679",
-      "sslPort": 44375
+      "applicationUrl": "http://localhost:50059",
+      "sslPort": 44323
     }
   },
   "profiles": {
@@ -19,7 +19,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "AgileDIary2": {
+    "AgileDiary2": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

@@ -1,6 +1,6 @@
 using System;
 
-namespace AgileDIary2
+namespace AgileDiary2
 {
     public class WeatherForecast
     {
