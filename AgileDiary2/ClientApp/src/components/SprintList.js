@@ -17,7 +17,7 @@ export class SprintList extends Component {
         this.populateSprintTable();
     }
 
-    static renderSprintTable(sprints) {
+    renderSprintTable(sprints) {
         return (
             <div>
                 <table className = 'table table-striped' aria-labelledby='tabelLabel'>
@@ -43,7 +43,7 @@ export class SprintList extends Component {
                 <div className="input-group mb-3" >
             <input type="text" className="form-control" placeholder="New sprint's title" aria-label="New sprint's title" aria-describedby="basic-addon2" />
                 <div className="input-group-append">
-                        <button className="btn btn-outline-secondary" type="button" onClick={() => alert('ok')}>Add sprint</button>
+                        <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleAddSprint()}>Add sprint</button>
     </div>
                 </div>
             </div>
@@ -76,7 +76,7 @@ export class SprintList extends Component {
     render() {
         let contents = this.state.loading
             ? <p><em>Loading</em></p>
-            : SprintList.renderSprintTable(this.state.sprints);
+            : this.renderSprintTable(this.state.sprints);
         return (
             <div>
                 <h1 id="tabelLabel">Your sprints</h1>
