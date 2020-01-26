@@ -53,7 +53,7 @@ namespace AgileDiary2.Controllers
 
         [HttpPost]
         [Route("create")]
-        public string Post(Sprint sprint)
+        public string Post([FromBody]Sprint sprint)
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             sprint.Creator = new Guid(currentUser);

@@ -1,16 +1,14 @@
 ﻿import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import authService from './api-authorization/AuthorizeService'
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
 
 
 export class SprintList extends Component {
-    static displatName = SprintList.name;
+    static displayName = SprintList.name;
 
     constructor(props) {
         super(props);
-        this.state = { sprints: [], loading: true, newTitle: "" };
+        this.state = { sprints: [], loading: true, newTitle: '' };
     }
 
     componentDidMount() {
@@ -40,12 +38,7 @@ export class SprintList extends Component {
                         </tr>
                     </tbody> 
                 </table>
-                <div className="input-group mb-3" >
-            <input type="text" className="form-control" placeholder="New sprint's title" aria-label="New sprint's title" aria-describedby="basic-addon2" />
-                <div className="input-group-append">
-                        <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleAddSprint()}>Add sprint</button>
-    </div>
-                </div>
+                <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddSprint()} onChange={() => this.handleNewTitleChange()} />
             </div>
         )
     }
@@ -53,24 +46,29 @@ export class SprintList extends Component {
     handleNewTitleChange(e) {
         e = e || window.event;
         var target = e.target || e.srcElement;
-        console.log(target);
+        this.setState({ sprints: this.state.sprints, loading: this.state.loading, newTitle:target.value })
+        //this.state.newTitle = target.value;
     }
 
     handleAddSprint() {
-        //this.createSprint({ title: this.state.newTitle });
-        console.log('ok');
-        alert('ok');
+        this.createSprint({ title: this.state.newTitle });
     }
 
     async createSprint(sprint) {
         const token = await authService.getAccessToken();
         const response = await fetch("sprint/create", {
             method: 'POST',
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({sprint: sprint})
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', },
+            body: JSON.stringify({
+                title: sprint.title,
+                startDate: sprint.startDate,
+                endDate: sprint.startDate
+            })
         });
-        const id = await response.json();
-        this.render();
+        await response.json();
+        this.populateSprintTable();
     }
 
     render() {
@@ -91,6 +89,6 @@ export class SprintList extends Component {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
-        this.setState({ sprints: data, loading: false, newTitle: "" });
+        this.setState({ sprints: data, loading: false, newTitle: '' });
     }
 }
