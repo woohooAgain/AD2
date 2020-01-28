@@ -47,7 +47,6 @@ export class SprintList extends Component {
         e = e || window.event;
         var target = e.target || e.srcElement;
         this.setState({ sprints: this.state.sprints, loading: this.state.loading, newTitle:target.value })
-        //this.state.newTitle = target.value;
     }
 
     handleAddSprint() {

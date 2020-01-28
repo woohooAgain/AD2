@@ -59,7 +59,8 @@ namespace AgileDiary2.Controllers
             sprint.Creator = new Guid(currentUser);
             sprint.SprintId = Guid.NewGuid();
             sprint.StartDate = sprint.StartDate.ToUniversalTime();
-            sprint.EndDate = sprint.EndDate.ToUniversalTime();
+            //sprint.EndDate = sprint.EndDate.ToUniversalTime();
+            sprint.EndDate = sprint.StartDate.ToUniversalTime().AddDays(63);
             _context.Sprints.Add(sprint);
             _context.SaveChanges();
             return sprint.SprintId.ToString();
@@ -79,6 +80,19 @@ namespace AgileDiary2.Controllers
             }
 
             return _context.Sprints.FirstOrDefault(s => s.SprintId == sprint.SprintId);
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public bool Put(string[] sprintIds)
+        {
+            var sprintsToDelete = new List<Sprint>(sprintIds.Length);
+            foreach (var id in sprintIds)
+            {
+                sprintsToDelete.Add(_context.Sprints.First(s => s.SprintId.Equals(new Guid(id))));
+            }
+            _context.RemoveRange(sprintsToDelete);
+            return true;
         }
     }
 }
