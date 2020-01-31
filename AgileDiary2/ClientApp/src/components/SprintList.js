@@ -1,6 +1,8 @@
 ﻿import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { NewSprint } from './NewItemInTable';
+import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 
 export class SprintList extends Component {
@@ -24,6 +26,7 @@ export class SprintList extends Component {
                             <th>Title</th>
                             <th>End Date</th>
                             <th>Start Date</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,7 +34,8 @@ export class SprintList extends Component {
                             <tr key={ sprint.sprintId }>
                                 <td>{ sprint.title } </td>
                                 <td>{ sprint.startDate } </td>
-                                <td>{ sprint.endDate } </td> 
+                                <td>{sprint.endDate} </td>
+                                <td><NavLink tag={Link} className="text-dark" to={`/sprint/${sprint.sprintId}`}>Edit</NavLink></td>
                             </tr>
                         )}
                         <tr>
@@ -41,6 +45,11 @@ export class SprintList extends Component {
                 <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddSprint()} onChange={() => this.handleNewTitleChange()} />
             </div>
         )
+    }
+
+    handleEdit(sprintId)
+    {
+        alert('ok');
     }
 
     handleNewTitleChange(e) {
