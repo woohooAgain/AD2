@@ -3,6 +3,7 @@ import authService from './api-authorization/AuthorizeService'
 import { NewSprint } from './NewItemInTable';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 
 export class Sprint extends Component {
@@ -11,13 +12,112 @@ export class Sprint extends Component {
     constructor(props) {
         super(props);
         var sprintId = props.match.params.sprintId;
-        this.state = { sprintId: sprintId};
+        this.state = { sprintId: sprintId, loading: true, sprint: null};
+    }
+
+    componentDidMount() {
+        this.populateSprintFields();
+    }
+
+    async populateSprintFields() {
+        const token = await authService.getAccessToken();
+        const response = await fetch(`/sprint/get/${this.state.sprintId}`, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        this.setState({ sprintId: this.state.sprintId, loading: false, sprint: data });
+    }
+
+    mapDate(date) {
+        let a = new Date(Date.parse(date));
+        const year = a.getFullYear();
+        const month = a.getMonth();
+        const day = a.getDate();
+
+        // Creating a new Date (with the delta)
+        const finalDate = new Date(year, month, day);
+        return finalDate.toISOString().substr(0, 10);
+    }
+
+    renderSprintFields(sprint) {
+        let startDate = this.mapDate(this.state.sprint.startDate);
+        let finishDate = this.mapDate(this.state.sprint.endDate);
+        return (
+            <Form>
+                <h3>{this.state.sprint.title}</h3>
+                <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleEditSprint()}>Save sprint</button>
+                <FormGroup>
+                    <Label for="exampleDate">Start date</Label>
+                    <Input
+                        type="date"
+                        name="date1"
+                        id="exampleDate1"
+                        placeholder="date placeholder1"
+                        onChange={() => this.handleOnStartChange()}
+                        defaultValue={startDate}/>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="exampleDate">End date</Label>
+                    <Input
+                        type="date"
+                        name="date2"
+                        id="exampleDate2"
+                        placeholder="date placeholder2"
+                        onChange={() => this.handleOnEndChange()}
+                        defaultValue={finishDate} />
+                </FormGroup>
+            </Form>
+        );
+    }
+
+    handleEditSprint() {
+        this.saveSprint(this.state.sprint);
+    }
+
+    async saveSprint(sprint) {
+        const token = await authService.getAccessToken();
+        const response = await fetch("sprint/edit", {
+            method: 'PUT',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                sprintId: sprint.sprintId,
+                creator: sprint.creator,
+                title: sprint.title,
+                startDate: sprint.startDate,
+                endDate: sprint.startDate
+            })
+        });
+        let newData = await response.json();
+        this.renderSprintFields(newData);
+    }
+
+    handleOnStartChange(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var newState = this.state.sprint;
+        newState.startDate = target.value;
+        this.setState({ sprint: newState });
+}
+
+    handleOnEndChange(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var newState = this.state.sprint;
+        newState.endDate = target.value;
+        this.setState({ sprint: newState });
     }
 
     render() {
+        let contents = this.state.loading
+            ? <p><em>Loading</em></p>
+            : this.renderSprintFields();
         return (
-            <h1>
-            { this.state.sprintId } </h1>
-        )
+            <div>
+                {contents}
+            </div>
+        );
     }
 }

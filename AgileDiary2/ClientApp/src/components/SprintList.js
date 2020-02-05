@@ -47,11 +47,6 @@ export class SprintList extends Component {
         )
     }
 
-    handleEdit(sprintId)
-    {
-        alert('ok');
-    }
-
     handleNewTitleChange(e) {
         e = e || window.event;
         var target = e.target || e.srcElement;
