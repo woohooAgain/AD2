@@ -19,5 +19,6 @@ namespace AgileDiary2.Data
         }
 
         public DbSet<Sprint> Sprints { get; set; }
+        public DbSet<Goal> Goals { get; set; }
     }
 }

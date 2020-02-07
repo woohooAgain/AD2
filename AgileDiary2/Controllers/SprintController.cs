@@ -9,6 +9,7 @@ using AgileDiary2.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AgileDiary2.Controllers
 {
@@ -28,19 +29,7 @@ namespace AgileDiary2.Controllers
         public IEnumerable<Sprint> List()
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var sprints = _context.Sprints.Where(s => s.Creator.ToString() == currentUser).ToList();
-            //for tests 
-            if (!sprints.Any())
-            {
-                sprints.Add(new Sprint
-                {
-                    Creator = new Guid(currentUser),
-                    SprintId = Guid.NewGuid(),
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(63),
-                    Title = "Test sprint"
-                });
-            }
+            var sprints = _context.Sprints.Where(s => s.Creator.ToString() == currentUser);
             return sprints;
         }
 
@@ -48,7 +37,8 @@ namespace AgileDiary2.Controllers
         [Route("get/{sprintId}")]
         public Sprint Get(string sprintId)
         {
-            return _context.Sprints.FirstOrDefault(s => s.SprintId.ToString() == sprintId);
+            var result = _context.Sprints.FirstOrDefault(s => s.SprintId.ToString() == sprintId);
+            return result;
         }
 
         [HttpPost]
@@ -60,6 +50,31 @@ namespace AgileDiary2.Controllers
             sprint.SprintId = Guid.NewGuid();
             sprint.StartDate = DateTime.Now.Date;
             sprint.EndDate = DateTime.Now.Date.AddDays(63);
+            sprint.Goals = new List<Goal>
+            {
+                new Goal
+                {
+                    Title = "Goal 1",
+                    Description = "Finish goal 1",
+                    GoalId = Guid.NewGuid(),
+                    Reward = "I will be the best at goal 1"
+                },
+                new Goal
+                {
+                    Title = "Goal 2",
+                    Description = "Finish goal 2",
+                    GoalId = Guid.NewGuid(),
+                    Reward = "I will be the best at goal 2"
+                },
+                new Goal
+                {
+                    Title = "Goal 3",
+                    Description = "Finish goal 3",
+                    GoalId = Guid.NewGuid(),
+                    Reward = "I will be the best at goal 3"
+                }
+            };
+
             _context.Sprints.Add(sprint);
             _context.SaveChanges();
             return sprint.SprintId.ToString();
