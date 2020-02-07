@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using AgileDiary2.Data;
 using AgileDiary2.Models;
 using Microsoft.AspNetCore.Authorization;

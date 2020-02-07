@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { NewSprint } from './NewItemInTable';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
@@ -46,26 +46,28 @@ export class Sprint extends Component {
             <Form>
                 <h3>{this.state.sprint.title}</h3>
                 <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleEditSprint()}>Save sprint</button>
-                <FormGroup>
-                    <Label for="exampleDate">Start date</Label>
-                    <Input
-                        type="date"
-                        name="date1"
-                        id="exampleDate1"
-                        placeholder="date placeholder1"
-                        onChange={() => this.handleOnStartChange()}
-                        defaultValue={startDate}/>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="exampleDate">End date</Label>
-                    <Input
-                        type="date"
-                        name="date2"
-                        id="exampleDate2"
-                        placeholder="date placeholder2"
-                        onChange={() => this.handleOnEndChange()}
-                        defaultValue={finishDate} />
-                </FormGroup>
+                <Row>
+                    <Col>
+                        <Label for="exampleDate">Start date</Label>
+                        <Input
+                            type="date"
+                            name="date1"
+                            id="exampleDate1"
+                            placeholder="date placeholder1"
+                            onChange={() => this.handleOnStartChange()}
+                            defaultValue={startDate} />
+                    </Col>
+                    <Col>
+                        <Label for="exampleDate">End date</Label>
+                        <Input
+                            type="date"
+                            name="date2"
+                            id="exampleDate2"
+                            placeholder="date placeholder2"
+                            onChange={() => this.handleOnEndChange()}
+                            defaultValue={finishDate} />
+                    </Col>
+                </Row>
             </Form>
         );
     }
