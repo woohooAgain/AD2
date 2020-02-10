@@ -81,7 +81,7 @@ export class GoalList extends Component {
         var goalId = targetId.split('_')[1];
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
-        goal.title = target.value;
+        goal.description = target.value;
         goals[goalId] = goal;
         this.setState({ goals: goals });
         }
@@ -93,7 +93,7 @@ export class GoalList extends Component {
         var goalId = targetId.split('_')[1];
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
-        goal.title = target.value;
+        goal.reward = target.value;
         goals[goalId] = goal;
         this.setState({ goals: goals });
     }
