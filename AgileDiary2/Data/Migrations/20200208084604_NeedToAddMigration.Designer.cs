@@ -4,14 +4,16 @@ using AgileDiary2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AgileDiary2.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200208084604_NeedToAddMigration")]
+    partial class NeedToAddMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,7 +98,7 @@ namespace AgileDiary2.Data.Migrations
                     b.Property<string>("Reward")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SprintId")
+                    b.Property<Guid?>("SprintId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
@@ -353,9 +355,7 @@ namespace AgileDiary2.Data.Migrations
                 {
                     b.HasOne("AgileDiary2.Models.Sprint", "Sprint")
                         .WithMany("Goals")
-                        .HasForeignKey("SprintId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SprintId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

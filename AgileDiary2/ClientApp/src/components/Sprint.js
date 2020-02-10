@@ -1,7 +1,8 @@
 ﻿import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { NewSprint } from './NewItemInTable';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Row, Col } from 'reactstrap';
+import { GoalList } from './GoalList';
+import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Row, Col, ListGroup, TabContent, TabPane  } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
@@ -24,8 +25,17 @@ export class Sprint extends Component {
         const response = await fetch(`/sprint/get/${this.state.sprintId}`, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
-        const data = await response.json();
-        this.setState({ sprintId: this.state.sprintId, loading: false, sprint: data });
+        const sprint = await response.json();
+        var goals = await this.fetchGoalsForSprint();
+        this.setState({ sprintId: this.state.sprintId, loading: false, sprint: sprint, goals:goals });
+    }
+
+    async fetchGoalsForSprint() {
+        const token = await authService.getAccessToken();
+        const response = await fetch(`/goals/list/${this.state.sprintId}`, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        return await response.json();
     }
 
     mapDate(date) {
@@ -68,6 +78,9 @@ export class Sprint extends Component {
                             defaultValue={finishDate} />
                     </Col>
                 </Row>
+                <Row>
+                    <GoalList goals={this.state.goals} />
+                </Row>
             </Form>
         );
     }
@@ -89,7 +102,8 @@ export class Sprint extends Component {
                 creator: sprint.creator,
                 title: sprint.title,
                 startDate: sprint.startDate,
-                endDate: sprint.startDate
+                endDate: sprint.startDate,
+                goals: this.state.goals
             })
         });
         let newData = await response.json();
@@ -102,7 +116,7 @@ export class Sprint extends Component {
         var newState = this.state.sprint;
         newState.startDate = target.value;
         this.setState({ sprint: newState });
-}
+    }
 
     handleOnEndChange(e) {
         e = e || window.event;

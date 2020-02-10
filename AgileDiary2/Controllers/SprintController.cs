@@ -90,6 +90,7 @@ namespace AgileDiary2.Controllers
                 oldSprint.EndDate = sprint.EndDate.Date;
                 oldSprint.StartDate = sprint.StartDate.Date;
                 oldSprint.Title = sprint.Title;
+                oldSprint.Goals = sprint.Goals;
                 _context.SaveChanges();
             }
 

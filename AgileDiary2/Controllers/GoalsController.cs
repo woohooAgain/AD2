@@ -4,6 +4,7 @@ using AgileDiary2.Data;
 using AgileDiary2.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AgileDiary2.Controllers
 {
@@ -19,10 +20,10 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpGet]
-        [Route("list")]
+        [Route("list/{sprintId}")]
         public IEnumerable<Goal> List(string sprintId)
         {
-            var goals = _context.Goals.Where(s => s.Sprint.SprintId.ToString() == sprintId);
+            var goals = _context.Goals.Where(s => s.SprintId.ToString() == sprintId);
             return goals;
         }
 
