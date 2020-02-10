@@ -39,18 +39,20 @@ export class GoalList extends Component {
                             <FormGroup>
                                 <Label for="title">Title</Label>
                                 <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
-                                    onChange={() => this.test()}
+                                    onChange={() => this.handleOnTitleChange()}
                                 />
                             </FormGroup>
                             <FormGroup>
                                 <Label for="description">Description</Label>
                                 <Input id="description" placeholder="Goal's description" defaultValue={goal.description}
-                                    //onChange = 
+                                    onChange={() => this.handleOnDescrptionChange()}
                                 />
                             </FormGroup>
                             <FormGroup>
                                 <Label for="reward">Reward</Label>
-                                <Input id="reward" placeholder="Goal's reward" defaultValue={goal.reward} />
+                                <Input id="reward" placeholder="Goal's reward" defaultValue={goal.reward}
+                                    onChange={() => this.handleOnRewardChange()}
+                                />
                             </FormGroup>
                         </TabPane>
                     )}
@@ -59,7 +61,7 @@ export class GoalList extends Component {
         )
     }
 
-    test(e)
+    handleOnTitleChange(e)
     {
         e = e || window.event;
         var target = e.target || e.srcElement;
@@ -72,12 +74,28 @@ export class GoalList extends Component {
         this.setState({ goals: goals });
     }
 
-    handleTitleOnChange(e) {
+    handleOnDescrptionChange(e) {
         e = e || window.event;
         var target = e.target || e.srcElement;
-        var newState = this.state.sprint;
-        newState.startDate = target.value;
-        this.setState({ sprint: newState });
+        var targetId = target.id;
+        var goalId = targetId.split('_')[1];
+        var goals = this.state.goals;
+        var goal = goals.filter(goal => goal.goalId === goalId)[0];
+        goal.title = target.value;
+        goals[goalId] = goal;
+        this.setState({ goals: goals });
+        }
+
+    handleOnRewardChange(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var targetId = target.id;
+        var goalId = targetId.split('_')[1];
+        var goals = this.state.goals;
+        var goal = goals.filter(goal => goal.goalId === goalId)[0];
+        goal.title = target.value;
+        goals[goalId] = goal;
+        this.setState({ goals: goals });
     }
 
     render() {
