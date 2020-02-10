@@ -107,6 +107,7 @@ namespace AgileDiary2.Controllers
                 sprintsToDelete.Add(_context.Sprints.First(s => s.SprintId.Equals(new Guid(id))));
             }
             _context.RemoveRange(sprintsToDelete);
+            _context.SaveChanges();
             return true;
         }
     }

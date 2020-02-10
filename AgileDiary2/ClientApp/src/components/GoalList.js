@@ -44,13 +44,13 @@ export class GoalList extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label for="description">Description</Label>
-                                <Input id="description" placeholder="Goal's description" defaultValue={goal.description}
+                                <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description}
                                     onChange={() => this.handleOnDescrptionChange()}
                                 />
                             </FormGroup>
                             <FormGroup>
                                 <Label for="reward">Reward</Label>
-                                <Input id="reward" placeholder="Goal's reward" defaultValue={goal.reward}
+                                <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward}
                                     onChange={() => this.handleOnRewardChange()}
                                 />
                             </FormGroup>
