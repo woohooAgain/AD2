@@ -13,5 +13,6 @@ namespace AgileDiary2.Models
         public string Reward { get; set; }
         public Guid SprintId { get; set; }
         public Sprint Sprint { get; set; }
+        public ICollection<Milestone> Milestones { get; set; }
     }
 }
