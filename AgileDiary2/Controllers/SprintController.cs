@@ -74,6 +74,30 @@ namespace AgileDiary2.Controllers
                     Reward = "I will be the best at goal 3"
                 }
             };
+            foreach (var goal in sprint.Goals)
+            {
+                goal.Milestones = new List<Milestone>
+                {
+                    new Milestone
+                    {
+                        Description = "25% done",
+                        MilestoneId = Guid.NewGuid(),
+                        ApproximateDate = sprint.StartDate.AddDays(16)
+                    },
+                    new Milestone
+                    {
+                        Description = "50% done",
+                        MilestoneId = Guid.NewGuid(),
+                        ApproximateDate = sprint.StartDate.AddDays(32)
+                    },
+                    new Milestone
+                    {
+                        Description = "75% done",
+                        MilestoneId = Guid.NewGuid(),
+                        ApproximateDate = sprint.StartDate.AddDays(47)
+                    }
+                };
+            }
 
             _context.Sprints.Add(sprint);
             _context.SaveChanges();

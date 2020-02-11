@@ -27,12 +27,21 @@ export class Sprint extends Component {
         });
         const sprint = await response.json();
         var goals = await this.fetchGoalsForSprint();
-        this.setState({ sprintId: this.state.sprintId, loading: false, sprint: sprint, goals:goals });
+        var milestones = await this.fetchMilestonesForGoals(goals);
+        this.setState({ loading: false, sprint: sprint, goals: goals, milestones: milestones});
     }
 
     async fetchGoalsForSprint() {
         const token = await authService.getAccessToken();
         const response = await fetch(`/goals/list/${this.state.sprintId}`, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        return await response.json();
+    }
+
+    async fetchMilestonesForGoals(goals) {
+        const token = await authService.getAccessToken();
+        const response = await fetch(`/milestones/list/${this.state.sprintId}`, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         return await response.json();
