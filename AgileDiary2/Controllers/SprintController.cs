@@ -37,7 +37,7 @@ namespace AgileDiary2.Controllers
         [Route("get/{sprintId}")]
         public Sprint Get(string sprintId)
         {
-            var result = _context.Sprints.FirstOrDefault(s => s.SprintId.ToString() == sprintId);
+            var result = _context.Sprints.Include(s => s.Goals).ThenInclude(g => g.Milestones).FirstOrDefault(s => s.SprintId.ToString() == sprintId);
             return result;
         }
 
@@ -80,19 +80,19 @@ namespace AgileDiary2.Controllers
                 {
                     new Milestone
                     {
-                        Description = "25% done",
+                        Description = "First step",
                         MilestoneId = Guid.NewGuid(),
                         ApproximateDate = sprint.StartDate.AddDays(16)
                     },
                     new Milestone
                     {
-                        Description = "50% done",
+                        Description = "Second step",
                         MilestoneId = Guid.NewGuid(),
                         ApproximateDate = sprint.StartDate.AddDays(32)
                     },
                     new Milestone
                     {
-                        Description = "75% done",
+                        Description = "Third step",
                         MilestoneId = Guid.NewGuid(),
                         ApproximateDate = sprint.StartDate.AddDays(47)
                     }

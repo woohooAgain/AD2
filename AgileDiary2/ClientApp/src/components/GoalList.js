@@ -1,9 +1,6 @@
-﻿import React, { Component, useState } from 'react';
+﻿import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { NewSprint } from './NewItemInTable';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, Nav, NavItem, NavLink, Row, Col, ListGroup, ListGroupItem, TabContent, TabPane } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import { Form, FormGroup, Label, Input, FormText,  InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
+import { Nav, NavItem, NavLink, Row, Col, ListGroup, TabContent, TabPane, FormGroup, Label, Input } from 'reactstrap';
 import classnames from 'classnames';
 
 
@@ -23,6 +20,7 @@ export class GoalList extends Component {
         }
         return (
             <div>
+                <h4 id="goalLabel">Goals in sprint</h4>
                 <Nav tabs>
                     {goals.map(goal =>
                         <NavItem>
@@ -32,33 +30,65 @@ export class GoalList extends Component {
                             </NavLink>
                         </NavItem>
                     )}
-            </Nav>  
+                </Nav>  
                 <TabContent activeTab={this.state.activeTab}>
                     {goals.map(goal =>
                         <TabPane key={goal.goalId} tabId={goal.goalId} >
-                            <FormGroup>
-                                <Label for="title">Title</Label>
-                                <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
-                                    onChange={() => this.handleOnTitleChange()}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="description">Description</Label>
-                                <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description}
-                                    onChange={() => this.handleOnDescrptionChange()}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="reward">Reward</Label>
-                                <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward}
-                                    onChange={() => this.handleOnRewardChange()}
-                                />
-                            </FormGroup>
+                            <Row>
+                                <Col sm="6">
+                                    <FormGroup>
+                                        <Label for="title">Title</Label>
+                                        <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
+                                            onChange={() => this.handleOnTitleChange()}
+                                        />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="description">Description</Label>
+                                        <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description}
+                                            onChange={() => this.handleOnDescrptionChange()}
+                                        />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="reward">Reward</Label>
+                                        <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward}
+                                            onChange={() => this.handleOnRewardChange()}
+                                        />
+                                    </FormGroup>
+                                </Col>
+                                <Col sm="6">
+                                <Label for="milestones">Milestones</Label>
+                                <ListGroup>
+                                {goal.milestones.map(m => 
+                                    <Input id={`${m.goalId}_${m.milestoneId}`} placeholder="Default milestone" defaultValue={m.description}
+                                    onChange={() => this.handleOnMilestoneTitleChange()}
+                                    />
+                                )}
+                                </ListGroup>                                
+                                </Col>
+                            </Row>                            
                         </TabPane>
                     )}
                     </TabContent>
                 </div>
         )
+    }
+
+    handleOnMilestoneTitleChange(e)
+    {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var targetId = target.id;
+        var goalId = targetId.split('_')[0];
+        var milestoneId = targetId.split('_')[1];
+        var goals = this.state.goals;
+        var goal = goals.filter(goal => goal.goalId === goalId)[0];
+        var milestones = goal.milestones;
+        var milestone = milestones.filter(milestone => milestone.milestoneId === milestoneId)[0];
+        milestone.description = target.value;
+        milestones[milestoneId] = milestone;
+        goal.milestones = milestones;
+        goals[goalId] = goal;
+        this.setState({ goals: goals });
     }
 
     handleOnTitleChange(e)
@@ -104,7 +134,6 @@ export class GoalList extends Component {
             : this.renderGoalList(this.state.goals);
         return (
             <div>
-                <h4 id="goalLabel">Goals in sprint</h4>
                 {contents}
             </div>
         );

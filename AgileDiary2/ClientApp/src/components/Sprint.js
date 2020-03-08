@@ -1,10 +1,7 @@
 ﻿import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { NewSprint } from './NewItemInTable';
 import { GoalList } from './GoalList';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Row, Col, ListGroup, TabContent, TabPane  } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Row, Col, Form, Label, Input  } from 'reactstrap';
 
 
 export class Sprint extends Component {
@@ -26,9 +23,7 @@ export class Sprint extends Component {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const sprint = await response.json();
-        var goals = await this.fetchGoalsForSprint();
-        var milestones = await this.fetchMilestonesForGoals(goals);
-        this.setState({ loading: false, sprint: sprint, goals: goals, milestones: milestones});
+        this.setState({ loading: false, sprint: sprint});
     }
 
     async fetchGoalsForSprint() {
@@ -39,7 +34,7 @@ export class Sprint extends Component {
         return await response.json();
     }
 
-    async fetchMilestonesForGoals(goals) {
+    async fetchMilestonesForGoals() {
         const token = await authService.getAccessToken();
         const response = await fetch(`/milestones/list/${this.state.sprintId}`, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
@@ -58,7 +53,7 @@ export class Sprint extends Component {
         return finalDate.toISOString().substr(0, 10);
     }
 
-    renderSprintFields(sprint) {
+    renderSprintFields() {
         let startDate = this.mapDate(this.state.sprint.startDate);
         let finishDate = this.mapDate(this.state.sprint.endDate);
         return (
@@ -88,7 +83,7 @@ export class Sprint extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <GoalList goals={this.state.goals} />
+                    <GoalList goals={this.state.sprint.goals} />
                 </Row>
             </Form>
         );
@@ -111,12 +106,12 @@ export class Sprint extends Component {
                 creator: sprint.creator,
                 title: sprint.title,
                 startDate: sprint.startDate,
-                endDate: sprint.startDate,
-                goals: this.state.goals
+                endDate: sprint.endDate,
+                goals: this.state.sprint.goals
             })
         });
         let newData = await response.json();
-        this.renderSprintFields(newData);
+        this.renderSprintFields();
     }
 
     handleOnStartChange(e) {

@@ -23,6 +23,7 @@ namespace AgileDiary2.Controllers
 
         [HttpGet]
         [Route("list/{sprintId}")]
+        //todo Change sprintId to goalId
         public IEnumerable<Milestone> List(string sprintId)
         {
             var result = new List<Milestone>();
