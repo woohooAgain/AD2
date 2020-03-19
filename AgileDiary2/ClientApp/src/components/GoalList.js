@@ -68,8 +68,8 @@ export class GoalList extends Component {
                             </Row>                            
                         </TabPane>
                     )}
-                    </TabContent>
-                </div>
+                </TabContent>
+            </div>
         )
     }
 

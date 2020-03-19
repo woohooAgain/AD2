@@ -6,7 +6,7 @@ export class NewSprint extends Component {
             <div className="input-group mb-3">
                 <input type="text" className="form-control" placeholder="New sprint's title" aria-label="New sprint's title" aria-describedby="basic-addon2" onChange={() => this.props.onChange()} />
                 <div className="input-group-append">
-                    <button className="btn btn-outline-secondary" type="button" onClick={() => this.props.onClick()}>Add sprint</button>
+                    <button className="btn btn-outline-secondary" type="button" onClick={() => this.props.onClick()}>Add</button>
                 </div>
             </div >
         )
