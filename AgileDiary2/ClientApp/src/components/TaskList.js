@@ -28,15 +28,17 @@ export class TaskList extends Component {
                         <tr>
                             <th>Title</th>
                             <th>Plan date</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {tasks.map(task =>
                             <tr key={task.myTaskId}>
-                                <td>{ task.title } </td>
-                                <td>{this.mapDate(task.planDate) } </td>
-                                <td><NavLink tag={Link} className="text-dark" to={`/sprint/${task.myTaskId}`}>Edit</NavLink></td>
+                                <td>
+                                    <Input id={`taskTitle_${task.myTaskId}`} placeholder="Task's title" defaultValue={task.title}
+                                            onChange={() => this.editTaskTitle()}
+                                    />
+                                </td>
+                                <td>{this.mapDate(task.planDate) } </td>                          
                                 <td><button id={`delete_${task.myTaskId}`} type="button" onClick={() => this.deleteTask()}>Delete</button></td>
                         <td><button id={`changeStatus_${task.myTaskId}`} type="button" onClick={() => this.completeTask(task.myTaskId)}>{this.counteChangeStatusNameButton(task.completed)}</button></td>
                             </tr>
@@ -48,6 +50,56 @@ export class TaskList extends Component {
                 <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
             </div>
         )
+    }
+    
+    async editTaskCompleted(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+
+        var targetId = target.id;
+        var taskId = targetId.split('_')[1];
+
+        var completed = target.value;
+        var tasks = this.state.tasks;
+        var task = tasks.filter(task => task.myTaskId === taskId)[0];
+        task.completed = completed;
+        await this.editTask(task);
+        this.setState({tasks: tasks});
+    }
+
+    async editTaskTitle(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+
+        var targetId = target.id;
+        var taskId = targetId.split('_')[1];
+
+        var newTitle = target.value;
+        var tasks = this.state.tasks;
+        var task = tasks.filter(task => task.myTaskId === taskId)[0];
+        task.title = newTitle;
+        await this.editTask(task);
+        this.setState({tasks: tasks});
+    }
+
+    async editTask(task) {
+        const token = await authService.getAccessToken();
+        const response = await fetch("task/edit", {
+            method: 'PUT',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', },
+            body: JSON.stringify({
+                myTaskId: task.myTaskId,
+                creator: task.creator,
+                planDate:task.planDate,
+                completed: task.completed,
+                goalId: task.goalId,
+                priority: task.priority,
+                title: task.title
+            })
+        });
+        await response.json();
     }
 
     async completeTask(taskId) {
@@ -63,7 +115,6 @@ export class TaskList extends Component {
         var task = tasks.filter(task => task.myTaskId === taskId)[0];
         var oldStatus = task.completed;
         task.completed = !oldStatus;
-        //tasks[taskId] = task;
         this.setState({tasks: tasks});
     }
 

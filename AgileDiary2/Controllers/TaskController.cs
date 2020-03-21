@@ -44,6 +44,15 @@ namespace AgileDiary2.Controllers
             return taskId;
         }
 
+        [HttpPut]
+        [Route("edit")]
+        public MyTask Put([FromBody]MyTask task)
+        {
+            _context.Update(task);
+            _context.SaveChanges();
+            return _context.Tasks.First(t => t.MyTaskId.Equals(task.MyTaskId));
+        }
+
         [HttpPost]
         [Route("create")]
         public string Post([FromBody]MyTask task)
@@ -53,7 +62,6 @@ namespace AgileDiary2.Controllers
             task.Creator = new Guid(currentUser);
             task.Completed = false;
             task.PlanDate = DateTime.Now;
-            task.Title = task.Title;
 
             _context.Tasks.Add(task);
             _context.SaveChanges();

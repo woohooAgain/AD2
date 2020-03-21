@@ -108,16 +108,8 @@ namespace AgileDiary2.Controllers
         [Route("edit")]
         public Sprint Put(Sprint sprint)
         {
-            var oldSprint = _context.Sprints.FirstOrDefault(s => s.SprintId == sprint.SprintId);
-            if (oldSprint != null)
-            {
-                oldSprint.EndDate = sprint.EndDate.Date;
-                oldSprint.StartDate = sprint.StartDate.Date;
-                oldSprint.Title = sprint.Title;
-                oldSprint.Goals = sprint.Goals;
-                _context.SaveChanges();
-            }
-
+            _context.Update(sprint);
+            _context.SaveChanges();
             return _context.Sprints.FirstOrDefault(s => s.SprintId == sprint.SprintId);
         }
 
