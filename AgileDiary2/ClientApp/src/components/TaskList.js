@@ -38,7 +38,11 @@ export class TaskList extends Component {
                                             onChange={() => this.editTaskTitle()}
                                     />
                                 </td>
-                                <td>{this.mapDate(task.planDate) } </td>                          
+                                <td>
+                                    <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" defaultValue={this.mapDate(task.planDate)}
+                                            onChange={() => this.editTaskPlanDate()}
+                                    />
+                                </td>
                                 <td><button id={`delete_${task.myTaskId}`} type="button" onClick={() => this.deleteTask()}>Delete</button></td>
                         <td><button id={`changeStatus_${task.myTaskId}`} type="button" onClick={() => this.completeTask(task.myTaskId)}>{this.counteChangeStatusNameButton(task.completed)}</button></td>
                             </tr>
@@ -51,18 +55,41 @@ export class TaskList extends Component {
             </div>
         )
     }
-    
-    async editTaskCompleted(e) {
+
+    async deleteTask(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var targetId = target.id;
+        var taskId = targetId.split('_')[1];
+
+        const token = await authService.getAccessToken();
+        var body = taskId;
+        const response = await fetch("task/delete", {
+            method: 'DELETE',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body)
+        });
+        await response.json();
+        var tasks = this.state.tasks;
+        var task = tasks.filter(s => s.myTaskId === taskId)[0];
+        tasks.splice(tasks.indexOf(task), 1);
+        this.setState({ tasks: tasks });
+    }
+
+    async editTaskPlanDate(e) {
         e = e || window.event;
         var target = e.target || e.srcElement;
 
         var targetId = target.id;
         var taskId = targetId.split('_')[1];
 
-        var completed = target.value;
+        var newPlanDate = target.value;
         var tasks = this.state.tasks;
         var task = tasks.filter(task => task.myTaskId === taskId)[0];
-        task.completed = completed;
+        task.planDate = newPlanDate;
         await this.editTask(task);
         this.setState({tasks: tasks});
     }
@@ -102,19 +129,12 @@ export class TaskList extends Component {
         await response.json();
     }
 
-    async completeTask(taskId) {
-        const token = await authService.getAccessToken();
-        const response = await fetch(`task/changeState/${taskId}`, {
-            method: 'POST',
-            headers: !token ? {} : {
-                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
-                'Content-Type': 'application/json', },            
-        });
-        await response.json();
+    async completeTask(taskId) {        
         var tasks = this.state.tasks;
         var task = tasks.filter(task => task.myTaskId === taskId)[0];
         var oldStatus = task.completed;
         task.completed = !oldStatus;
+        await this.editTask(task);
         this.setState({tasks: tasks});
     }
 
@@ -131,7 +151,7 @@ export class TaskList extends Component {
         let a = new Date(Date.parse(date));
         const year = a.getFullYear();
         const month = a.getMonth();
-        const day = a.getDate();
+        const day = a.getDate() + 1;
 
         // Creating a new Date (with the delta)
         const finalDate = new Date(year, month, day);

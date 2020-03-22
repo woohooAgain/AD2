@@ -80,7 +80,7 @@ export class SprintList extends Component {
         var sprint = sprints.filter(s => s.sprintId === sprintId)[0];
         sprints.splice(sprints.indexOf(sprint), 1);
         this.setState({ sprints: sprints });
-}
+    }
 
     handleNewTitleChange(e) {
         e = e || window.event;
