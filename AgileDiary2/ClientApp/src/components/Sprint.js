@@ -87,7 +87,7 @@ export class Sprint extends Component {
                     <GoalList goals={this.state.sprint.goals} />
                 </Row>
                 <Row>
-                    <TaskList  />
+                    <TaskList goals={this.state.sprint.goals} />
                 </Row>
             </Form>
         );

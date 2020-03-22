@@ -12,7 +12,7 @@ export class TaskList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { tasks: [], loading: false };
+        this.state = { goals: this.props.goals, tasks: [], loading: false };
     }
 
     componentDidMount() {
@@ -28,6 +28,7 @@ export class TaskList extends Component {
                         <tr>
                             <th>Title</th>
                             <th>Plan date</th>
+                            <th>Goal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,8 +44,17 @@ export class TaskList extends Component {
                                             onChange={() => this.editTaskPlanDate()}
                                     />
                                 </td>
+                                <td>
+                                    <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" value={this.countGoalForTask(task.goalId)}
+                                            onChange={() => this.editTaskGoal()}>
+                                            <option>Common task</option>
+                                            {this.state.goals.map(goal => 
+                                                <option>{goal.title}</option>
+                                            )}
+                                    </Input>
+                                </td>
                                 <td><button id={`delete_${task.myTaskId}`} type="button" onClick={() => this.deleteTask()}>Delete</button></td>
-                        <td><button id={`changeStatus_${task.myTaskId}`} type="button" onClick={() => this.completeTask(task.myTaskId)}>{this.counteChangeStatusNameButton(task.completed)}</button></td>
+                                <td><button id={`changeStatus_${task.myTaskId}`} type="button" onClick={() => this.completeTask(task.myTaskId)}>{this.counteChangeStatusNameButton(task.completed)}</button></td>
                             </tr>
                         )}
                         <tr>
@@ -77,6 +87,34 @@ export class TaskList extends Component {
         var task = tasks.filter(s => s.myTaskId === taskId)[0];
         tasks.splice(tasks.indexOf(task), 1);
         this.setState({ tasks: tasks });
+    }
+
+    countGoalForTask(goalId) {
+        if (goalId !== null && goalId !== "") {
+            return this.state.goals.filter(goal => goal.goalId === goalId)[0].title;
+        }
+    }
+
+    async editTaskGoal(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+
+        var targetId = target.id;
+        var taskId = targetId.split('_')[1];
+
+        var newGoal = target.value;
+        if (newGoal == "Common task") {
+            newGoal = "";
+        }
+        else {
+            var goalId = this.state.goals.filter(goal => goal.title === newGoal)[0].goalId;
+            newGoal = goalId;
+        }
+        var tasks = this.state.tasks;
+        var task = tasks.filter(task => task.myTaskId === taskId)[0];
+        task.goalId = newGoal;
+        await this.editTask(task);
+        this.setState({tasks: tasks});
     }
 
     async editTaskPlanDate(e) {
