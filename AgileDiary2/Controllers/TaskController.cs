@@ -45,7 +45,6 @@ namespace AgileDiary2.Controllers
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             task.MyTaskId = Guid.NewGuid();
             task.Creator = new Guid(currentUser);
-            task.Completed = false;
             task.PlanDate = DateTime.Now.Date;
 
             _context.Tasks.Add(task);

@@ -12,6 +12,7 @@ namespace AgileDiary2.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Title { get; set; }
+        public bool Finished { get; set; }
         public ICollection<Goal> Goals { get; set; }
     }
 }

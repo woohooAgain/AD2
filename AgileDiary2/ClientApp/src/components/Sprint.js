@@ -27,31 +27,22 @@ export class Sprint extends Component {
         this.setState({ loading: false, sprint: sprint});
     }
 
-    async fetchGoalsForSprint() {
-        const token = await authService.getAccessToken();
-        const response = await fetch(`/goals/list/${this.state.sprintId}`, {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        });
-        return await response.json();
-    }
-
-    async fetchMilestonesForGoals() {
-        const token = await authService.getAccessToken();
-        const response = await fetch(`/milestones/list/${this.state.sprintId}`, {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        });
-        return await response.json();
-    }
-
     mapDate(date) {
         let a = new Date(Date.parse(date));
-        const year = a.getFullYear();
-        const month = a.getMonth();
-        const day = a.getDate();
+        let year = a.getFullYear();
+        let month = a.getMonth() + 1;
+        let day = a.getDate();
 
         // Creating a new Date (with the delta)
-        const finalDate = new Date(year, month, day);
-        return finalDate.toISOString().substr(0, 10);
+        // const finalDate = new Date(year, month, day);
+        // return finalDate.toLocaleDateString().substr(0, 10);
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        return year + "-" + month + "-" + day;
     }
 
     renderSprintFields() {
@@ -60,7 +51,10 @@ export class Sprint extends Component {
         return (
             <Form>
                 <h3>{this.state.sprint.title}</h3>
-                <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleEditSprint()}>Save sprint</button>
+                <Row>
+                    <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleEditSprint()}>Save sprint</button>
+                    <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleFinishSprint()}>Finish sprint</button>
+                </Row>
                 <Row>
                     <Col>
                         <Label for="exampleDate">Start date</Label>
@@ -70,7 +64,7 @@ export class Sprint extends Component {
                             id="exampleDate1"
                             placeholder="date placeholder1"
                             onChange={() => this.handleOnStartChange()}
-                            defaultValue={startDate} />
+                            value={startDate} />
                     </Col>
                     <Col>
                         <Label for="exampleDate">End date</Label>
@@ -80,7 +74,7 @@ export class Sprint extends Component {
                             id="exampleDate2"
                             placeholder="date placeholder2"
                             onChange={() => this.handleOnEndChange()}
-                            defaultValue={finishDate} />
+                            value={finishDate} />
                     </Col>
                 </Row>
                 <Row>
@@ -91,6 +85,18 @@ export class Sprint extends Component {
                 </Row>
             </Form>
         );
+    }
+
+    async handleFinishSprint() {
+        var newDate = new Date();
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth();
+        const day = newDate.getDate();
+        const finalDate = new Date(year, month, day).toISOString().substr(0, 10);
+        var newState = this.state.sprint;
+        newState.endDate = finalDate;
+        newState.finished = true;
+        await this.saveSprint(newState);
     }
 
     handleEditSprint() {
@@ -111,11 +117,12 @@ export class Sprint extends Component {
                 title: sprint.title,
                 startDate: sprint.startDate,
                 endDate: sprint.endDate,
-                goals: this.state.sprint.goals
+                goals: this.state.sprint.goals,
+                finished: sprint.finished
             })
         });
         let newData = await response.json();
-        this.renderSprintFields();
+        this.setState({sprint: newData});
     }
 
     handleOnStartChange(e) {

@@ -35,12 +35,12 @@ export class TaskList extends Component {
                         {tasks.map(task =>
                             <tr key={task.myTaskId}>
                                 <td>
-                                    <Input id={`taskTitle_${task.myTaskId}`} placeholder="Task's title" defaultValue={task.title}
+                                    <Input id={`taskTitle_${task.myTaskId}`} placeholder="Task's title" value={task.title}
                                             onChange={() => this.editTaskTitle()}
                                     />
                                 </td>
                                 <td>
-                                    <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" defaultValue={this.mapDate(task.planDate)}
+                                    <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.planDate)}
                                             onChange={() => this.editTaskPlanDate()}
                                     />
                                 </td>
@@ -187,13 +187,20 @@ export class TaskList extends Component {
 
     mapDate(date) {
         let a = new Date(Date.parse(date));
-        const year = a.getFullYear();
-        const month = a.getMonth();
-        const day = a.getDate() + 1;
+        let year = a.getFullYear();
+        let month = a.getMonth() + 1;
+        let day = a.getDate();
 
         // Creating a new Date (with the delta)
-        const finalDate = new Date(year, month, day);
-        return finalDate.toISOString().substr(0, 10);
+        // const finalDate = new Date(year, month, day);
+        // return finalDate.toLocaleDateString().substr(0, 10);
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        return year + "-" + month + "-" + day;
     }
 
     handleNewTitleChange(e) {
