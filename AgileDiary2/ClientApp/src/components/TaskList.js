@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Nav, NavItem, NavLink, Row, Col, ListGroup, TabContent, TabPane, FormGroup, Label, Input } from 'reactstrap';
-import classnames from 'classnames';
-import { Link } from 'react-router-dom';
+import { Input } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
-
-
 
 export class TaskList extends Component {
     static displayName = TaskList.name;

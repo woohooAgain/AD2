@@ -28,6 +28,20 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpGet]
+        [Route("/getForDate/{resultId}")]
+        public Result GetForDate(string stringDate)
+        {
+            DateTime.TryParse(stringDate, out var date);
+            return _context.Result.First(r => IsSameDate(r.Date, date));
+        }
+
+        private bool IsSameDate(DateTime? rDate, in DateTime date)
+        {
+            return rDate.HasValue &&
+                   rDate.Value.Date.Equals(date.Date);
+        }
+
+        [HttpGet]
         [Route("/getForSprint/{sprintId}")]
         public IEnumerable<Result> GetForSprint(string sprintId)
         {
