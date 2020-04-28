@@ -99,6 +99,23 @@ namespace AgileDiary2.Controllers
                 };
             }
 
+            for (int i = 0; i < 63; i++)
+            {
+                var newResult = new Result
+                {
+                    Date = DateTime.Now.AddDays(i),
+                };
+                if ((i + 1) % 7 == 0)
+                {
+                    newResult.WeekNumber = (i + 1) / 7;
+                }
+
+                _context.Result.Add(newResult);
+            }
+            _context.Result.Add(new Result
+            {
+                SprintId = sprint.SprintId
+            });
             _context.Sprints.Add(sprint);
             _context.SaveChanges();
             return sprint.SprintId.ToString();

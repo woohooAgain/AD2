@@ -2,7 +2,7 @@
 import authService from './api-authorization/AuthorizeService'
 import { GoalList } from './GoalList';
 import { TaskList } from './TaskList';
-import { Results } from './Results';
+import { ResultList } from './ResultList';
 import { Row, Col, Form, Label, Input  } from 'reactstrap';
 
 
@@ -85,7 +85,7 @@ export class Sprint extends Component {
                     <TaskList goals={this.state.sprint.goals} />
                 </Row>
                 <Row>
-                    <Results sprintId={this.state.sprintId} />
+                    <ResultList sprintId={this.state.sprintId} />
                 </Row>
             </Form>
         );

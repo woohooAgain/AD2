@@ -21,36 +21,36 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpGet]
-        [Route("/get/{resultId}")]
+        [Route("get/{resultId}")]
         public Result Get(string resultId)
         {
             return _context.Result.First(r => r.ResultId.ToString().Equals(resultId));
         }
 
         [HttpGet]
-        [Route("/getForDate/{resultId}")]
-        public Result GetForDate(string stringDate)
+        [Route("getForDate/{stringDate}")]
+        public IEnumerable<Result> GetForDate(string stringDate)
         {
             DateTime.TryParse(stringDate, out var date);
-            return _context.Result.First(r => IsSameDate(r.Date, date));
+            return _context.Result.Where(r => r.Date.HasValue && r.Date.Value.Date.Equals(date.Date));
         }
 
-        private bool IsSameDate(DateTime? rDate, in DateTime date)
+        private bool IsSameDate(DateTime? rDate, DateTime date)
         {
             return rDate.HasValue &&
                    rDate.Value.Date.Equals(date.Date);
         }
 
         [HttpGet]
-        [Route("/getForSprint/{sprintId}")]
+        [Route("getForSprint/{sprintId}")]
         public IEnumerable<Result> GetForSprint(string sprintId)
         {
             return _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId));
         }
 
-        [HttpPost]
-        [Route("/create")]
-        public Guid Create([FromBody] Result result)
+        [HttpPut]
+        [Route("edit")]
+        public Guid Edit([FromBody] Result result)
         {
             result.ResultId = Guid.NewGuid();
             _context.Result.Add(result);

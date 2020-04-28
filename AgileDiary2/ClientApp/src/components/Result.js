@@ -1,0 +1,106 @@
+import React, { Component } from 'react';
+import authService from './api-authorization/AuthorizeService'
+import { Row, Input, FormGroup, Label } from 'reactstrap';
+import { NewSprint } from './NewItemInTable';
+
+export class Result extends Component {
+    static displayName = Result.name;
+
+    constructor(props) {
+        super(props);
+        this.state = { result: this.props.result, title:this.props.title };
+    }
+
+    renderResults() {
+        return (
+            <div>
+                <h4 id={`result${this.state.title}`}>Result for {this.state.title}</h4>
+                <FormGroup>
+                    <Label for="thanks">Thanks</Label>
+                    <Input id={`thanks_${this.state.result.resultId}`} placeholder="Thanks"
+                        onChange={() => this.editResultThanks()}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="achievement">Achievement</Label>
+                    <Input id={`chievement_${this.state.result.resultId}`} placeholder="Achievement"
+                        onChange={() => this.editResultAchievement()}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="lesson">Lesson</Label>
+                    <Input id={`lesson_${this.state.result.resultId}`} placeholder="Lesson"
+                        onChange={() => this.editResultLesson()}
+                    />
+                </FormGroup>
+            </div>
+        )
+    }
+
+    async editResultThanks(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+
+        var targetId = target.id;
+        var taskId = targetId.split('_')[1];
+
+        var newThanks = target.value;
+        var result = this.state.result;
+        result.thanks = newThanks;
+        await this.editResult(result);
+        this.setState({result: result});
+    }
+
+    async editResultAchievement(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+
+        var targetId = target.id;
+        var taskId = targetId.split('_')[1];
+
+        var newAchievement = target.value;
+        var result = this.state.result;
+        result.achievement = newAchievement;
+        await this.editResult(result);
+        this.setState({result: result});
+    }
+
+    async editResultLesson(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+
+        var targetId = target.id;
+        var taskId = targetId.split('_')[1];
+
+        var newLesson = target.value;
+        var result = this.state.result;
+        result.lesson = newLesson;
+        await this.editResult(result);
+        this.setState({result: result});
+    }
+
+    async editResult(result) {
+        const token = await authService.getAccessToken();
+        const response = await fetch("result/edit", {
+            method: 'PUT',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', },
+            body: JSON.stringify({
+                resultId: this.state.result.resultId,
+                thanks: this.state.result.thanks,
+                achievement: this.state.result.achievement,
+                lesson: this.state.result.lesson
+            })
+        });
+        await response.json();
+    }
+
+    render() {
+        return (
+            <div>
+                {this.renderResults()}
+            </div>
+        );
+    }
+}

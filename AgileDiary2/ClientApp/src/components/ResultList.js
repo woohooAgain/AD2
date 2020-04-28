@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Input } from 'reactstrap';
+import { Row, Input } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
+import { Result } from './Result';
 
-export class Results extends Component {
-    static displayName = Results.name;
+export class ResultList extends Component {
+    static displayName = ResultList.name;
 
     constructor(props) {
         super(props);
@@ -18,7 +19,12 @@ export class Results extends Component {
     renderResults(tasks) {
         return (
             <div>
-                Ok
+                <Row>
+                    <Result result={this.state.sprintResult} title="sprint" />
+                </Row>
+                <Row>
+                    <Result result={this.state.dailyResult} title="today"/>
+                </Row>
             </div>
         )
     }
@@ -47,12 +53,12 @@ export class Results extends Component {
         const response2 = await fetch(url, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
-        data = await response2.json();
-        this.setState({  dailyResult: data});
+        const data2 = await response2.json();
+        this.setState({  loading: false, dailyResult: data2});
     }
 
     mapDate(date) {
-        let a = new Date(Date.parse(date));
+        let a = new Date(date);
         let year = a.getFullYear();
         let month = a.getMonth() + 1;
         let day = a.getDate();
