@@ -17,19 +17,19 @@ export class Result extends Component {
                 <h4 id={`result${this.state.title}`}>Result for {this.state.title}</h4>
                 <FormGroup>
                     <Label for="thanks">Thanks</Label>
-                    <Input id={`thanks_${this.state.result.resultId}`} placeholder="Thanks"
+                    <Input id={`thanks_${this.state.result.resultId}`} placeholder="Thanks" value={this.state.result.thanks}
                         onChange={() => this.editResultThanks()}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Label for="achievement">Achievement</Label>
-                    <Input id={`chievement_${this.state.result.resultId}`} placeholder="Achievement"
+                    <Input id={`chievement_${this.state.result.resultId}`} placeholder="Achievement" value={this.state.result.achievement}
                         onChange={() => this.editResultAchievement()}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Label for="lesson">Lesson</Label>
-                    <Input id={`lesson_${this.state.result.resultId}`} placeholder="Lesson"
+                    <Input id={`lesson_${this.state.result.resultId}`} placeholder="Lesson" value={this.state.result.lesson}
                         onChange={() => this.editResultLesson()}
                     />
                 </FormGroup>
@@ -102,5 +102,23 @@ export class Result extends Component {
                 {this.renderResults()}
             </div>
         );
+    }
+
+    mapDate(date) {
+        let a = new Date(date);
+        let year = a.getFullYear();
+        let month = a.getMonth() + 1;
+        let day = a.getDate();
+
+        // Creating a new Date (with the delta)
+        // const finalDate = new Date(year, month, day);
+        // return finalDate.toLocaleDateString().substr(0, 10);
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        return year + "-" + month + "-" + day;
     }
 }

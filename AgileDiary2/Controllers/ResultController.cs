@@ -52,8 +52,10 @@ namespace AgileDiary2.Controllers
         [Route("edit")]
         public Guid Edit([FromBody] Result result)
         {
-            result.ResultId = Guid.NewGuid();
-            _context.Result.Add(result);
+            var oldResult = _context.Result.Single(r => r.ResultId.Equals(result.ResultId));
+            oldResult.Thanks = result.Thanks;
+            oldResult.Achievement = result.Achievement;
+            oldResult.Lesson = result.Lesson;
             _context.SaveChanges();
             return result.ResultId;
         }

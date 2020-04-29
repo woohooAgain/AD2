@@ -20,10 +20,10 @@ export class ResultList extends Component {
         return (
             <div>
                 <Row>
-                    <Result result={this.state.sprintResult} title="sprint" />
+                    <Result result={this.state.sprintResult[0]} title="sprint" />
                 </Row>
                 <Row>
-                    <Result result={this.state.dailyResult} title="today"/>
+                    <Result result={this.state.dailyResult[0]} title="today"/>
                 </Row>
             </div>
         )
