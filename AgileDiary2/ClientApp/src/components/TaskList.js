@@ -18,7 +18,7 @@ export class TaskList extends Component {
     renderTaskList(tasks) {
         return (
             <div>
-                <h4 id="taskLabel">Tasks in sprint</h4>
+                <h4 id="taskLabel">All tasks</h4>
                 <table className = 'table table-striped' aria-labelledby='tabelLabel'>
                     <thead>
                         <tr>

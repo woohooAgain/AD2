@@ -9,21 +9,24 @@ export class ResultList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { sprintId: this.props.sprintId, loading: true, sprintResult: null, dailyResult: null };
+        this.state = { sprintId: this.props.sprintId, loading: true };
     }
 
     componentDidMount() {
         this.populateResults();
     }
 
-    renderResults(tasks) {
+    renderResults() {
         return (
             <div>
                 <Row>
-                    <Result result={this.state.sprintResult[0]} title="sprint" />
+                    <Result result={this.state.sprintResult[0]} title="sprint" sprintId={this.state.sprintId} />                    
                 </Row>
                 <Row>
-                    <Result result={this.state.dailyResult[0]} title="today"/>
+                    <Result result={this.state.weekResult[0]} title="week" sprintId={this.state.sprintId} />
+                </Row>
+                <Row>
+                    <Result result={this.state.dailyResult[0]} title="day" sprintId={this.state.sprintId} />
                 </Row>
             </div>
         )
@@ -49,12 +52,18 @@ export class ResultList extends Component {
         const data = await response.json();
         this.setState({  sprintResult: data});
         var dateFilter = this.mapDate(Date.now());
-        url = `result/getForDate/${dateFilter}`;
+        url = `result/getForDate/${this.state.sprintId}/${dateFilter}`;
         const response2 = await fetch(url, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data2 = await response2.json();
-        this.setState({  loading: false, dailyResult: data2});
+        this.setState({  dailyResult: data2});
+        url = `result/getForWeek/${this.state.sprintId}/${dateFilter}`;
+        const response3 = await fetch(url, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        const data3 = await response3.json();
+        this.setState({  loading: false, weekResult: data3});
     }
 
     mapDate(date) {

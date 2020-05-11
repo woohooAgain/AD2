@@ -14,5 +14,14 @@ namespace AgileDiary2.Models
         public DateTime? Date { get; set; }
         public int? WeekNumber { get; set; }
         public Guid? SprintId { get; set; }
+        public ResultOrigin ResultOrigin { get; set; }
+    }
+
+    public enum ResultOrigin
+    {
+        Undefined,
+        Sprint,
+        Week,
+        Day
     }
 }

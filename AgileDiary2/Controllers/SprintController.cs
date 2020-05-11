@@ -104,17 +104,29 @@ namespace AgileDiary2.Controllers
                 var newResult = new Result
                 {
                     Date = DateTime.Now.AddDays(i),
+                    ResultOrigin = ResultOrigin.Day,
+                    SprintId = sprint.SprintId
                 };
-                if ((i + 1) % 7 == 0)
-                {
-                    newResult.WeekNumber = (i + 1) / 7;
-                }
-
                 _context.Result.Add(newResult);
             }
+
+            for (var i = 0; i < 9; i++)
+            {
+                var newResult = new Result
+                {
+                    Date = DateTime.Now.AddDays(i*7 + 6),
+                    ResultOrigin = ResultOrigin.Week,
+                    WeekNumber = i + 1,
+                    SprintId = sprint.SprintId
+                };
+                _context.Result.Add(newResult);
+            }
+
             _context.Result.Add(new Result
             {
-                SprintId = sprint.SprintId
+                Date = DateTime.Now.AddDays(62),
+                SprintId = sprint.SprintId,
+                ResultOrigin = ResultOrigin.Sprint
             });
             _context.Sprints.Add(sprint);
             _context.SaveChanges();

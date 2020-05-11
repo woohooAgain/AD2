@@ -28,11 +28,11 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpGet]
-        [Route("getForDate/{stringDate}")]
-        public IEnumerable<Result> GetForDate(string stringDate)
+        [Route("getForDate/{sprintId}/{stringDate}")]
+        public IEnumerable<Result> GetForDate(string sprintId, string stringDate)
         {
             DateTime.TryParse(stringDate, out var date);
-            return _context.Result.Where(r => r.Date.HasValue && r.Date.Value.Date.Equals(date.Date));
+            return _context.Result.Where(r => r.Date.HasValue && r.Date.Value.Date.Equals(date.Date) && r.SprintId.ToString().Equals(sprintId));
         }
 
         private bool IsSameDate(DateTime? rDate, DateTime date)
@@ -45,7 +45,38 @@ namespace AgileDiary2.Controllers
         [Route("getForSprint/{sprintId}")]
         public IEnumerable<Result> GetForSprint(string sprintId)
         {
-            return _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId));
+            return _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId) && r.ResultOrigin.Equals(ResultOrigin.Sprint));
+        }
+
+        [HttpGet]
+        [Route("getForWeek/{sprintId}/{stringDate}")]
+        public IEnumerable<Result> GetForWeek(string sprintId, string stringDate)
+        {
+            DateTime.TryParse(stringDate, out var date);
+            var weekNumber = CountWeekNumber(sprintId, date);
+            return _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId) && r.WeekNumber.Equals(weekNumber));
+        }
+
+        [HttpGet]
+        [Route("{sprintId}/{resultOrigin}")]
+        public IEnumerable<Result> ListResults(string sprintId, string resultOrigin)
+        {
+            Enum.TryParse(resultOrigin, true, out ResultOrigin resultOriginEnum);
+            var sprintResults = _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId)).OrderBy(r => r.Date);
+            switch (resultOriginEnum)
+            {
+                case ResultOrigin.Undefined:
+                    return sprintResults;
+                default:
+                    return sprintResults.Where(sr => sr.ResultOrigin.Equals(resultOriginEnum));
+            }
+        }
+
+        private int CountWeekNumber(string sprintId, DateTime date)
+        {
+            var sprintStartDate = _context.Sprints.First(s => s.SprintId.ToString().Equals(sprintId)).StartDate;
+            var days = (date.Date - sprintStartDate.Date).Days;
+            return days / 7 + 1;
         }
 
         [HttpPut]

@@ -4,6 +4,7 @@ import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
 import { SprintList } from './components/SprintList';
+import { ResultTable } from './components/ResultTable';
 import { Sprint } from './components/Sprint';
 import { Counter } from './components/Counter';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
@@ -23,6 +24,7 @@ export default class App extends Component {
         <AuthorizeRoute path='/fetch-data' component={FetchData} />
         <AuthorizeRoute path='/sprintList' component={SprintList} />
         <AuthorizeRoute path='/sprint/:sprintId' component={Sprint} />
+        <AuthorizeRoute path='/result/:sprintId/:resultOrigin' component={ResultTable} />
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
       </Layout>
     );

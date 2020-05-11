@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Row, Input, FormGroup, Label } from 'reactstrap';
-import { NewSprint } from './NewItemInTable';
+import { Input, FormGroup, Label } from 'reactstrap';
+import { NavLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 export class Result extends Component {
     static displayName = Result.name;
 
     constructor(props) {
         super(props);
-        this.state = { result: this.props.result, title:this.props.title };
+        this.state = { result: this.props.result, title:this.props.title, sprintId:this.props.sprintId };
     }
 
     renderResults() {
         return (
             <div>
                 <h4 id={`result${this.state.title}`}>Result for {this.state.title}</h4>
+                <NavLink tag={Link} className="text-dark" to={`/result/${this.state.sprintId}/${this.state.title}`}>Inspect all</NavLink>
                 <FormGroup>
                     <Label for="thanks">Thanks</Label>
                     <Input id={`thanks_${this.state.result.resultId}`} placeholder="Thanks" value={this.state.result.thanks}
