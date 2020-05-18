@@ -43,7 +43,8 @@ export class TaskList extends Component {
                                 <td>
                                     <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" /*value={this.countGoalForTask(task.goalId)}*/
                                             onChange={() => this.editTaskGoal()}>
-                                            <option>Common task</option>
+                                            
+                                            <option>{this.state.goals.filter(goal => goal.goalId === task.goalId).map(goal => goal.title)}</option>
                                             {this.state.goals.map(goal => 
                                                 <option>{goal.title}</option>
                                             )}
