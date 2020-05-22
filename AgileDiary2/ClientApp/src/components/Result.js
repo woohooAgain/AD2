@@ -20,19 +20,19 @@ export class Result extends Component {
                 <FormGroup>
                     <Label for="thanks">Thanks</Label>
                     <Input id={`thanks_${this.state.result.resultId}`} placeholder="Thanks" value={this.state.result.thanks}
-                        onChange={() => this.editResultThanks()}
+                        onChange={() => this.editResultThanks()} onBlur={() => this.saveResult()}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Label for="achievement">Achievement</Label>
                     <Input id={`chievement_${this.state.result.resultId}`} placeholder="Achievement" value={this.state.result.achievement}
-                        onChange={() => this.editResultAchievement()}
+                        onChange={() => this.editResultAchievement()} onBlur={() => this.saveResult()}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Label for="lesson">Lesson</Label>
                     <Input id={`lesson_${this.state.result.resultId}`} placeholder="Lesson" value={this.state.result.lesson}
-                        onChange={() => this.editResultLesson()}
+                        onChange={() => this.editResultLesson()} onBlur={() => this.saveResult()}
                     />
                 </FormGroup>
             </div>
@@ -49,8 +49,12 @@ export class Result extends Component {
         var newThanks = target.value;
         var result = this.state.result;
         result.thanks = newThanks;
-        await this.editResult(result);
+        
         this.setState({result: result});
+    }
+
+    async saveResult(e) {
+        await this.editResult(this.state.result);
     }
 
     async editResultAchievement(e) {
@@ -63,7 +67,6 @@ export class Result extends Component {
         var newAchievement = target.value;
         var result = this.state.result;
         result.achievement = newAchievement;
-        await this.editResult(result);
         this.setState({result: result});
     }
 
@@ -77,7 +80,6 @@ export class Result extends Component {
         var newLesson = target.value;
         var result = this.state.result;
         result.lesson = newLesson;
-        await this.editResult(result);
         this.setState({result: result});
     }
 
