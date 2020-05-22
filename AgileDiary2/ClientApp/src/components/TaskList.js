@@ -32,17 +32,17 @@ export class TaskList extends Component {
                             <tr key={task.myTaskId}>
                                 <td>
                                     <Input id={`taskTitle_${task.myTaskId}`} placeholder="Task's title" value={task.title}
-                                            onChange={() => this.editTaskTitle()}
+                                            onChange={() => this.editTaskTitle()} onBlur={() => this.saveTask()}
                                     />
                                 </td>
                                 <td>
                                     <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.planDate)}
-                                            onChange={() => this.editTaskPlanDate()}
+                                            onChange={() => this.editTaskPlanDate()} onBlur={() => this.saveTask()}
                                     />
                                 </td>
                                 <td>
                                     <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" /*value={this.countGoalForTask(task.goalId)}*/
-                                            onChange={() => this.editTaskGoal()}>
+                                            onChange={() => this.editTaskGoal()} onBlur={() => this.saveTask()}>
                                             
                                             <option>{this.state.goals.filter(goal => goal.goalId === task.goalId).map(goal => goal.title)}</option>
                                             {this.state.goals.map(goal => 
@@ -110,7 +110,6 @@ export class TaskList extends Component {
         var tasks = this.state.tasks;
         var task = tasks.filter(task => task.myTaskId === taskId)[0];
         task.goalId = newGoal;
-        await this.editTask(task);
         this.setState({tasks: tasks});
     }
 
@@ -125,7 +124,6 @@ export class TaskList extends Component {
         var tasks = this.state.tasks;
         var task = tasks.filter(task => task.myTaskId === taskId)[0];
         task.planDate = newPlanDate;
-        await this.editTask(task);
         this.setState({tasks: tasks});
     }
 
@@ -140,8 +138,17 @@ export class TaskList extends Component {
         var tasks = this.state.tasks;
         var task = tasks.filter(task => task.myTaskId === taskId)[0];
         task.title = newTitle;
-        await this.editTask(task);
         this.setState({tasks: tasks});
+    }
+
+    async saveTask(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var targetId = target.id;
+        var taskId = targetId.split('_')[1];
+        var tasks = this.state.tasks;
+        var task = tasks.filter(task => task.myTaskId === taskId)[0];
+        await this.editTask(task);
     }
 
     async editTask(task) {
