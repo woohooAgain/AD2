@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Input } from 'reactstrap';
+import { Row, Input } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
+import { Result } from './Result';
 import { NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
 
-export class TaskList extends Component {
-    static displayName = TaskList.name;
+export class TaskTable extends Component {
+    static displayName = TaskTable.name;
 
     constructor(props) {
         super(props);
@@ -21,7 +21,6 @@ export class TaskList extends Component {
         return (
             <div>
                 <h4 id="taskLabel">All tasks</h4>
-                <NavLink tag={Link} className="text-dark" to={`/task/list`}>Inspect all</NavLink>
                 <table className = 'table table-striped' aria-labelledby='tabelLabel'>
                     <thead>
                         <tr>
@@ -37,14 +36,13 @@ export class TaskList extends Component {
                                     <Input id={`taskTitle_${task.myTaskId}`} placeholder="Task's title" value={task.title}
                                             onChange={() => this.editTaskTitle()} onBlur={() => this.saveTask()}
                                     />
-                                </td>
+                                </td>                                
                                 <td>
                                     <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.planDate)}
                                             onChange={() => this.editTaskPlanDate()} onBlur={() => this.saveTask()}
                                     />
                                 </td>
-                                <td>
-                                    <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" /*value={this.countGoalForTask(task.goalId)}*/
+                                <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" /*value={this.countGoalForTask(task.goalId)}*/
                                             onChange={() => this.editTaskGoal()} onBlur={() => this.saveTask()}>
                                             
                                             <option>{this.state.goals.filter(goal => goal.goalId === task.goalId).map(goal => goal.title)}</option>
@@ -52,7 +50,6 @@ export class TaskList extends Component {
                                                 <option>{goal.title}</option>
                                             )}
                                     </Input>
-                                </td>
                                 <td><button id={`delete_${task.myTaskId}`} type="button" onClick={() => this.deleteTask()}>Delete</button></td>
                                 <td><button id={`changeStatus_${task.myTaskId}`} type="button" onClick={() => this.completeTask(task.myTaskId)}>{this.counteChangeStatusNameButton(task.completed)}</button></td>
                             </tr>
@@ -64,6 +61,20 @@ export class TaskList extends Component {
                 <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
             </div>
         )
+    }
+
+    async countGoalTitle(goalId) {
+        const token = await authService.getAccessToken();
+        if (goalId !== null)
+        {
+            var goalUrl = `goals/get/${goalId}`;
+            const goalResponse = await fetch(goalUrl, {
+                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            });
+            const goalData = await goalResponse.json();
+            return goalData.title;
+        }
+        return "";
     }
 
     async deleteTask(e) {
@@ -248,11 +259,16 @@ export class TaskList extends Component {
 
     async populateTaskList() {
         const token = await authService.getAccessToken();
-        var url = `task/listNearest`;
+        var url = `task/list`;
         const response = await fetch(url, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
-        const data = await response.json();        
-        this.setState({  tasks: data, loading: false});
+        const data = await response.json();
+        var goalUrl = `goals/list`;
+        const goalResponse = await fetch(goalUrl, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        const goalData = await goalResponse.json();
+        this.setState({  goals: goalData, tasks: data, loading: false});
     }
 }

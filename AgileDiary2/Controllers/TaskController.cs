@@ -21,12 +21,24 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpGet]
-        [Route("list")]
+        [Route("listNearest")]
         public IEnumerable<MyTask> List()
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var tasks = _context.Tasks.Where(s => s.Creator.ToString() == currentUser);
-            return tasks;
+            //Get tasks with plan date < this week end
+            DateTime baseDate = DateTime.Today;
+            var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
+            var thisWeekEnd = thisWeekStart.AddDays(7).AddSeconds(-1);
+            return tasks.Where(t => t.PlanDate < thisWeekEnd && !t.Completed);
+        }
+
+        [HttpGet]
+        [Route("list")]
+        public IEnumerable<MyTask> ListAll()
+        {
+            var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            return _context.Tasks.Where(s => s.Creator.ToString() == currentUser);
         }
 
         [HttpPut]

@@ -68,6 +68,16 @@ export class Sprint extends Component {
                             value={startDate} />
                     </Col>
                     <Col>
+                        <Label for="exampleDate">Current date</Label>
+                        <Input
+                            type="date"
+                            name="date2"
+                            id="exampleDate3"
+                            placeholder="date placeholder2"
+                            onChange={() => this.handleOnEndChange()}
+                            value={this.mapDate(new Date())} />
+                    </Col>
+                    <Col>
                         <Label for="exampleDate">End date</Label>
                         <Input
                             type="date"
