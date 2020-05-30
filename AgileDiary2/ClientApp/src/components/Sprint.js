@@ -60,31 +60,31 @@ export class Sprint extends Component {
                     <Col>
                         <Label for="exampleDate">Start date</Label>
                         <Input
+                            readOnly
                             type="date"
                             name="date1"
                             id="exampleDate1"
                             placeholder="date placeholder1"
-                            onChange={() => this.handleOnStartChange()}
                             value={startDate} />
                     </Col>
                     <Col>
                         <Label for="exampleDate">Current date</Label>
                         <Input
+                            readOnly
                             type="date"
                             name="date2"
                             id="exampleDate3"
                             placeholder="date placeholder2"
-                            onChange={() => this.handleOnEndChange()}
                             value={this.mapDate(new Date())} />
                     </Col>
                     <Col>
                         <Label for="exampleDate">End date</Label>
                         <Input
+                            readOnly
                             type="date"
                             name="date2"
                             id="exampleDate2"
                             placeholder="date placeholder2"
-                            onChange={() => this.handleOnEndChange()}
                             value={finishDate} />
                     </Col>
                 </Row>
@@ -137,22 +137,6 @@ export class Sprint extends Component {
         });
         let newData = await response.json();
         this.setState({sprint: newData});
-    }
-
-    handleOnStartChange(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var newState = this.state.sprint;
-        newState.startDate = target.value;
-        this.setState({ sprint: newState });
-    }
-
-    handleOnEndChange(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var newState = this.state.sprint;
-        newState.endDate = target.value;
-        this.setState({ sprint: newState });
     }
 
     render() {
