@@ -53,7 +53,6 @@ export class Sprint extends Component {
             <Form>
                 <h3>{this.state.sprint.title}</h3>
                 <Row>
-                    <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleEditSprint()}>Save sprint</button>
                     <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleFinishSprint()}>Finish sprint</button>
                 </Row>
                 <Row>
@@ -111,10 +110,6 @@ export class Sprint extends Component {
         newState.endDate = finalDate;
         newState.finished = true;
         await this.saveSprint(newState);
-    }
-
-    handleEditSprint() {
-        this.saveSprint(this.state.sprint);
     }
 
     async saveSprint(sprint) {

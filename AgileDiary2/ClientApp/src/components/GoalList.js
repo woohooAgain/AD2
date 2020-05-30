@@ -2,6 +2,7 @@
 import authService from './api-authorization/AuthorizeService'
 import { Nav, NavItem, NavLink, Row, Col, ListGroup, TabContent, TabPane, FormGroup, Label, Input } from 'reactstrap';
 import classnames from 'classnames';
+import {Milestone} from './Milestone'
 
 
 export class GoalList extends Component {
@@ -35,7 +36,7 @@ export class GoalList extends Component {
                     {goals.map(goal =>
                         <TabPane key={goal.goalId} tabId={goal.goalId} >
                             <Row>
-                                <Col sm="6">
+                                <Col sm="4">
                                     <FormGroup>
                                         <Label for="title">Title</Label>
                                         <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
@@ -55,15 +56,14 @@ export class GoalList extends Component {
                                         />
                                     </FormGroup>
                                 </Col>
-                                <Col sm="6">
-                                <Label for="milestones">Milestones</Label>
-                                <ListGroup>
-                                {goal.milestones.map(m => 
-                                    <Input id={`${m.goalId}_${m.milestoneId}`} placeholder="Default milestone" defaultValue={m.description}
-                                    onChange={() => this.handleOnMilestoneTitleChange()} onBlur={() => this.saveMilestone()}
-                                    />
-                                )}
-                                </ListGroup>                                
+                                <Col sm="8">
+                                    <FormGroup>
+                                        {goal.milestones.map(m => 
+                                            <Milestone milestone={m}
+                                            onChange={() => this.handleOnMilestoneTitleChange()} blur={() => this.saveMilestone()}
+                                            />
+                                        )}
+                                    </FormGroup>                                
                                 </Col>
                             </Row>                            
                         </TabPane>
