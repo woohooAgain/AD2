@@ -54,5 +54,14 @@ namespace AgileDiary2.Controllers
 
             return goals;
         }
+
+        [HttpPut]
+        [Route("edit")]
+        public Goal Put([FromBody]Goal goal)
+        {
+            _context.Update(goal);
+            _context.SaveChanges();
+            return _context.Goals.First(t => t.GoalId.Equals(goal.GoalId));
+        }
     }
 }

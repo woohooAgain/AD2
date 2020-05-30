@@ -39,19 +39,19 @@ export class GoalList extends Component {
                                     <FormGroup>
                                         <Label for="title">Title</Label>
                                         <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
-                                            onChange={() => this.handleOnTitleChange()}
+                                            onChange={() => this.handleOnTitleChange()}  onBlur={() => this.saveGoal()}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label for="description">Description</Label>
                                         <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description}
-                                            onChange={() => this.handleOnDescrptionChange()}
+                                            onChange={() => this.handleOnDescrptionChange()} onBlur={() => this.saveGoal()}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label for="reward">Reward</Label>
                                         <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward}
-                                            onChange={() => this.handleOnRewardChange()}
+                                            onChange={() => this.handleOnRewardChange()} onBlur={() => this.saveGoal()}
                                         />
                                     </FormGroup>
                                 </Col>
@@ -60,7 +60,7 @@ export class GoalList extends Component {
                                 <ListGroup>
                                 {goal.milestones.map(m => 
                                     <Input id={`${m.goalId}_${m.milestoneId}`} placeholder="Default milestone" defaultValue={m.description}
-                                    onChange={() => this.handleOnMilestoneTitleChange()}
+                                    onChange={() => this.handleOnMilestoneTitleChange()} onBlur={() => this.saveMilestone()}
                                     />
                                 )}
                                 </ListGroup>                                
@@ -89,6 +89,17 @@ export class GoalList extends Component {
         goal.milestones = milestones;
         goals[goalId] = goal;
         this.setState({ goals: goals });
+    }
+
+    saveMilestone(e)
+    {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var targetId = target.id;
+        var goalId = targetId.split('_')[0];
+        var goals = this.state.goals;
+        var goal = goals.filter(goal => goal.goalId === goalId)[0];
+        this.editGoal(goal);
     }
 
     handleOnTitleChange(e)
@@ -126,6 +137,35 @@ export class GoalList extends Component {
         goal.reward = target.value;
         goals[goalId] = goal;
         this.setState({ goals: goals });
+    }
+
+    async saveGoal(e) {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var targetId = target.id;
+        var goalId = targetId.split('_')[1];
+        var goals = this.state.goals;
+        var goal = goals.filter(goal => goal.goalId === goalId)[0];
+        await this.editGoal(goal);
+    }
+
+    async editGoal(goal) {
+        const token = await authService.getAccessToken();
+        const response = await fetch("goals/edit", {
+            method: 'PUT',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', },
+            body: JSON.stringify({
+                goalId: goal.goalId,
+                title: goal.title,
+                description: goal.description,
+                reward: goal.reward,
+                sprintId: goal.sprintId,
+                milestones: goal.milestones
+            })
+        });
+        await response.json();
     }
 
     render() {
