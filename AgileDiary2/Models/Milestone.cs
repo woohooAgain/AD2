@@ -12,6 +12,7 @@ namespace AgileDiary2.Models
         public string Description { get; set; }
         public DateTime ApproximateDate { get; set; }
         public Guid GoalId { get; set; }
+        public bool Reached { get; set; }
         public Goal Goal { get; set; }
     }
 }

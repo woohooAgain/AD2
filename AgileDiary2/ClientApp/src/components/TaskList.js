@@ -27,6 +27,7 @@ export class TaskList extends Component {
                         <tr>
                             <th>Title</th>
                             <th>Plan date</th>
+                            <th>Complete date</th>
                             <th>Goal</th>
                         </tr>
                     </thead>
@@ -41,6 +42,11 @@ export class TaskList extends Component {
                                 <td>
                                     <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.planDate)}
                                             onChange={() => this.editTaskPlanDate()} onBlur={() => this.saveTask()}
+                                    />
+                                </td>
+                                <td>
+                                    <Input type="date" id={`taskCompleteDate_${task.myTaskId}`} placeholder="Task's complete date" value={this.mapDate(task.completeDate)}
+                                            readOnly
                                     />
                                 </td>
                                 <td>
@@ -179,6 +185,7 @@ export class TaskList extends Component {
         var task = tasks.filter(task => task.myTaskId === taskId)[0];
         var oldStatus = task.completed;
         task.completed = !oldStatus;
+        task.completeDate = new Date();
         await this.editTask(task);
         this.setState({tasks: tasks});
     }
@@ -193,6 +200,9 @@ export class TaskList extends Component {
     }    
 
     mapDate(date) {
+        if (date===null){
+            return null;
+        }
         let a = new Date(Date.parse(date));
         let year = a.getFullYear();
         let month = a.getMonth() + 1;
