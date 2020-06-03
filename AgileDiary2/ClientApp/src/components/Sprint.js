@@ -3,7 +3,7 @@ import authService from './api-authorization/AuthorizeService'
 import { GoalList } from './GoalList';
 import { TaskList } from './TaskList';
 import { ResultList } from './ResultList';
-import { Row, Col, Form, Label, Input  } from 'reactstrap';
+import { Collapse, Row, Col, Form, Label, Input  } from 'reactstrap';
 
 
 export class Sprint extends Component {
@@ -46,12 +46,25 @@ export class Sprint extends Component {
         return year + "-" + month + "-" + day;
     }
 
+    isWeekEnd() {
+        let startDate = new Date(Date.parse(this.state.sprint.startDate));
+        let currentDate = new Date();
+        let difference = (Math.floor((currentDate - startDate)/ (1000 * 3600 * 24)) + 1) % 7;
+        if (difference === 0) {
+            return true;
+        }
+        return false;
+    }
+
     renderSprintFields() {
         let startDate = this.mapDate(this.state.sprint.startDate);
         let finishDate = this.mapDate(this.state.sprint.endDate);
         return (
             <Form>
                 <h3>{this.state.sprint.title}</h3>
+                <Collapse isOpen={this.isWeekEnd()}>
+                    Do not forget to add week result.
+                </Collapse>
                 <Row>
                     <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleFinishSprint()}>Finish sprint</button>
                 </Row>
