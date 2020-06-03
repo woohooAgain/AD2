@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Nav, NavItem, NavLink, Row, Col, ListGroup, TabContent, TabPane, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Collapse, Nav, NavItem, NavLink, Row, Col, ListGroup, TabContent, TabPane, FormGroup, Label, Input } from 'reactstrap';
 import classnames from 'classnames';
 import {Milestone} from './Milestone'
 
@@ -10,7 +10,12 @@ export class GoalList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { goals: this.props.goals, loading: false, activeTab: this.props.goals[0].goalId};
+        this.state = { goals: this.props.goals, loading: false, activeTab: this.props.goals[0].goalId, isOpen: true, collapseButtonName:"Collapse"};
+    }
+
+    collapse() {
+        let buttonName = this.state.isOpen ? "Show" : "Collapse";
+        this.setState({ isOpen: !this.state.isOpen, collapseButtonName:buttonName });
     }
 
     renderGoalList(goals) {
@@ -22,53 +27,56 @@ export class GoalList extends Component {
         return (
             <div>
                 <h4 id="goalLabel">Goals in sprint</h4>
-                <Nav tabs>
-                    {goals.map(goal =>
-                        <NavItem>
-                            <NavLink key={goal.goalId} onClick={() => { toggle(goal.goalId); }}
-                                className={classnames({ active: this.state.activeTab === goal.goalId})}>
-                                {goal.title}
-                            </NavLink>
-                        </NavItem>
-                    )}
-                </Nav>  
-                <TabContent activeTab={this.state.activeTab}>
-                    {goals.map(goal =>
-                        <TabPane key={goal.goalId} tabId={goal.goalId} >
-                            <Row>
-                                <Col sm="4">
-                                    <FormGroup>
-                                        <Label for="title">Title</Label>
-                                        <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
-                                            onChange={() => this.handleOnTitleChange()}  onBlur={() => this.saveGoal()}
-                                        />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="description">Description</Label>
-                                        <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description}
-                                            onChange={() => this.handleOnDescrptionChange()} onBlur={() => this.saveGoal()}
-                                        />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="reward">Reward</Label>
-                                        <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward}
-                                            onChange={() => this.handleOnRewardChange()} onBlur={() => this.saveGoal()}
-                                        />
-                                    </FormGroup>
-                                </Col>
-                                <Col sm="8">
-                                    <FormGroup>
-                                        {goal.milestones.map(m => 
-                                            <Milestone milestone={m}
-                                            onChange={() => this.handleOnMilestoneTitleChange()} blur={() => this.saveMilestone()}
+                 <button className="btn btn-outline-secondary" type="button" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</button>
+                <Collapse isOpen={this.state.isOpen}>
+                    <Nav tabs>
+                        {goals.map(goal =>
+                            <NavItem>
+                                <NavLink key={goal.goalId} onClick={() => { toggle(goal.goalId); }}
+                                    className={classnames({ active: this.state.activeTab === goal.goalId})}>
+                                    {goal.title}
+                                </NavLink>
+                            </NavItem>
+                        )}
+                    </Nav>  
+                    <TabContent activeTab={this.state.activeTab}>
+                        {goals.map(goal =>
+                            <TabPane key={goal.goalId} tabId={goal.goalId} >
+                                <Row>
+                                    <Col sm="4">
+                                        <FormGroup>
+                                            <Label for="title">Title</Label>
+                                            <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
+                                                onChange={() => this.handleOnTitleChange()}  onBlur={() => this.saveGoal()}
                                             />
-                                        )}
-                                    </FormGroup>                                
-                                </Col>
-                            </Row>                            
-                        </TabPane>
-                    )}
-                </TabContent>
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <Label for="description">Description</Label>
+                                            <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description}
+                                                onChange={() => this.handleOnDescrptionChange()} onBlur={() => this.saveGoal()}
+                                            />
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <Label for="reward">Reward</Label>
+                                            <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward}
+                                                onChange={() => this.handleOnRewardChange()} onBlur={() => this.saveGoal()}
+                                            />
+                                        </FormGroup>
+                                    </Col>
+                                    <Col sm="8">
+                                        <FormGroup>
+                                            {goal.milestones.map(m => 
+                                                <Milestone milestone={m}
+                                                onChange={() => this.handleOnMilestoneTitleChange()} blur={() => this.saveMilestone()}
+                                                />
+                                            )}
+                                        </FormGroup>                                
+                                    </Col>
+                                </Row>                            
+                            </TabPane>
+                        )}
+                    </TabContent>
+                </Collapse>
             </div>
         )
     }

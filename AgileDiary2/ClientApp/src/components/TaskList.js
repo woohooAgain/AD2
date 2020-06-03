@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { Input } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
-import { NavLink } from 'reactstrap';
+import { Collapse, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 export class TaskList extends Component {
@@ -10,7 +10,12 @@ export class TaskList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { goals: this.props.goals, tasks: [], loading: false };
+        this.state = { goals: this.props.goals, tasks: [], loading: false, isOpen: true, collapseButtonName:"Collapse" };
+    }
+
+    collapse() {
+        let buttonName = this.state.isOpen ? "Show" : "Collapse";
+        this.setState({ isOpen: !this.state.isOpen, collapseButtonName:buttonName });
     }
 
     componentDidMount() {
@@ -21,53 +26,56 @@ export class TaskList extends Component {
         return (
             <div>
                 <h4 id="taskLabel">All tasks</h4>
-                <NavLink tag={Link} className="text-dark" to={`/task/list`}>Inspect all</NavLink>
-                <table className = 'table table-striped' aria-labelledby='tabelLabel'>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Plan date</th>
-                            <th>Complete date</th>
-                            <th>Goal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tasks.map(task =>
-                            <tr key={task.myTaskId}>
-                                <td>
-                                    <Input id={`taskTitle_${task.myTaskId}`} placeholder="Task's title" value={task.title}
-                                            onChange={() => this.editTaskTitle()} onBlur={() => this.saveTask()}
-                                    />
-                                </td>
-                                <td>
-                                    <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.planDate)}
-                                            onChange={() => this.editTaskPlanDate()} onBlur={() => this.saveTask()}
-                                    />
-                                </td>
-                                <td>
-                                    <Input type="date" id={`taskCompleteDate_${task.myTaskId}`} placeholder="Task's complete date" value={this.mapDate(task.completeDate)}
-                                            readOnly
-                                    />
-                                </td>
-                                <td>
-                                    <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" /*value={this.countGoalForTask(task.goalId)}*/
-                                            onChange={() => this.editTaskGoal()} onBlur={() => this.saveTask()}>
-                                            
-                                            <option>{this.state.goals.filter(goal => goal.goalId === task.goalId).map(goal => goal.title)}</option>
-                                            {this.state.goals.map(goal => 
-                                                <option>{goal.title}</option>
-                                            )}
-                                    </Input>
-                                </td>
-                                <td><button id={`delete_${task.myTaskId}`} type="button" onClick={() => this.deleteTask()}>Delete</button></td>
-                                <td><button id={`changeStatus_${task.myTaskId}`} type="button" onClick={() => this.completeTask(task.myTaskId)}>{this.counteChangeStatusNameButton(task.completed)}</button></td>
+                <button className="btn btn-outline-secondary" type="button" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</button>
+                <Collapse isOpen={this.state.isOpen}>
+                    <NavLink tag={Link} className="text-dark" to={`/task/list`}>Inspect all</NavLink>
+                    <table className = 'table table-striped' aria-labelledby='tabelLabel'>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Plan date</th>
+                                <th>Complete date</th>
+                                <th>Goal</th>
                             </tr>
-                        )}
-                        <tr>
-                        </tr>
-                    </tbody> 
-                </table>
-                <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
+                        </thead>
+                        <tbody>
+                            {tasks.map(task =>
+                                <tr key={task.myTaskId}>
+                                    <td>
+                                        <Input id={`taskTitle_${task.myTaskId}`} placeholder="Task's title" value={task.title}
+                                                onChange={() => this.editTaskTitle()} onBlur={() => this.saveTask()}
+                                        />
+                                    </td>
+                                    <td>
+                                        <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.planDate)}
+                                                onChange={() => this.editTaskPlanDate()} onBlur={() => this.saveTask()}
+                                        />
+                                    </td>
+                                    <td>
+                                        <Input type="date" id={`taskCompleteDate_${task.myTaskId}`} placeholder="Task's complete date" value={this.mapDate(task.completeDate)}
+                                                readOnly
+                                        />
+                                    </td>
+                                    <td>
+                                        <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" /*value={this.countGoalForTask(task.goalId)}*/
+                                                onChange={() => this.editTaskGoal()} onBlur={() => this.saveTask()}>
+                                                
+                                                <option>{this.state.goals.filter(goal => goal.goalId === task.goalId).map(goal => goal.title)}</option>
+                                                {this.state.goals.map(goal => 
+                                                    <option>{goal.title}</option>
+                                                )}
+                                        </Input>
+                                    </td>
+                                    <td><button id={`delete_${task.myTaskId}`} type="button" onClick={() => this.deleteTask()}>Delete</button></td>
+                                    <td><button id={`changeStatus_${task.myTaskId}`} type="button" onClick={() => this.completeTask(task.myTaskId)}>{this.counteChangeStatusNameButton(task.completed)}</button></td>
+                                </tr>
+                            )}
+                            <tr>
+                            </tr>
+                        </tbody> 
+                    </table>
+                    <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
+                </Collapse>                
             </div>
         )
     }
