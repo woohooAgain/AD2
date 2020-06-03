@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Row, Input } from 'reactstrap';
+import { Row, Input, Col } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
 import { Result } from './Result';
 
@@ -20,13 +20,15 @@ export class ResultList extends Component {
         return (
             <div>
                 <Row>
-                    <Result result={this.state.sprintResult[0]} title="sprint" sprintId={this.state.sprintId} />                    
-                </Row>
-                <Row>
-                    <Result result={this.state.weekResult[0]} title="week" sprintId={this.state.sprintId} />
-                </Row>
-                <Row>
-                    <Result result={this.state.dailyResult[0]} title="day" sprintId={this.state.sprintId} />
+                    <Col md="4">
+                        <Result result={this.state.sprintResult[0]} title="sprint" sprintId={this.state.sprintId} />
+                    </Col>
+                    <Col md="4">
+                        <Result result={this.state.weekResult[0]} title="week" sprintId={this.state.sprintId} />
+                    </Col>
+                    <Col md="4">
+                        <Result result={this.state.dailyResult[0]} title="day" sprintId={this.state.sprintId} />
+                    </Col>
                 </Row>
             </div>
         )
