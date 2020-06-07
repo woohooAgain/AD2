@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Row, Input, Col } from 'reactstrap';
+import { Collapse, Row, Input, Col } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
 import { Result } from './Result';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 export class ResultList extends Component {
     static displayName = ResultList.name;
 
     constructor(props) {
         super(props);
-        this.state = { sprintId: this.props.sprintId, loading: true };
+        this.state = { sprintId: this.props.sprintId, loading: true, isOpen: true, collapseButtonName:"Collapse"  };
+    }
+
+    collapse() {
+        let buttonName = this.state.isOpen ? "Show" : "Collapse";
+        this.setState({ isOpen: !this.state.isOpen, collapseButtonName:buttonName });
     }
 
     componentDidMount() {
@@ -19,17 +25,21 @@ export class ResultList extends Component {
     renderResults() {
         return (
             <div>
-                <Row>
-                    <Col md="4">
-                        <Result result={this.state.sprintResult[0]} title="sprint" sprintId={this.state.sprintId} />
-                    </Col>
-                    <Col md="4">
-                        <Result result={this.state.weekResult[0]} title="week" sprintId={this.state.sprintId} />
-                    </Col>
-                    <Col md="4">
-                        <Result result={this.state.dailyResult[0]} title="day" sprintId={this.state.sprintId} />
-                    </Col>
-                </Row>
+                <h4>Results</h4>
+                <button className="btn btn-outline-secondary" type="button" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</button>
+                <Collapse isOpen={this.state.isOpen}>
+                    <Row>
+                        <Col md="4">
+                            <Result result={this.state.sprintResult[0]} title="sprint" sprintId={this.state.sprintId} />
+                        </Col>
+                        <Col md="4">
+                            <Result result={this.state.weekResult[0]} title="week" sprintId={this.state.sprintId} />
+                        </Col>
+                        <Col md="4">
+                            <Result result={this.state.dailyResult[0]} title="day" sprintId={this.state.sprintId} />
+                        </Col>
+                    </Row>
+                </Collapse>                
             </div>
         )
     }
