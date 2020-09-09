@@ -4,6 +4,11 @@ import { Row, Input } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
 import { Result } from './Result';
 import { NavLink } from 'reactstrap';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+
+function enumFormatter(cell, row, enumObject) {
+    return enumObject[cell];
+  }
 
 export class TaskTable extends Component {
     static displayName = TaskTable.name;
@@ -19,6 +24,7 @@ export class TaskTable extends Component {
 
     renderTaskList(tasks) {
         return (
+            <div>
             <div>
                 <h4 id="taskLabel">All tasks</h4>
                 <table className = 'table table-striped' aria-labelledby='tabelLabel'>
@@ -59,6 +65,12 @@ export class TaskTable extends Component {
                     </tbody> 
                 </table>
                 <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
+            </div>
+                <BootstrapTable data={ tasks }>
+                <TableHeaderColumn dataField='title' isKey>Title</TableHeaderColumn>
+                <TableHeaderColumn dataField='planDate'>Plan date</TableHeaderColumn>
+                <TableHeaderColumn dataField='goalTitle'>Goal</TableHeaderColumn>
+                </BootstrapTable>
             </div>
         )
     }
@@ -269,6 +281,13 @@ export class TaskTable extends Component {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const goalData = await goalResponse.json();
+        const extTasks = data.map(function (t) {
+            t.goalTitle = goalData.filter(function(goal) {
+                return goal.goalId === t.goalId;
+            }).map(function(goal) {
+                return goal.title;
+            })[0];
+        });
         this.setState({  goals: goalData, tasks: data, loading: false});
     }
 }

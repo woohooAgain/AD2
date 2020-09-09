@@ -4,6 +4,7 @@ import { Input } from 'reactstrap';
 import { NewSprint } from './NewItemInTable';
 import { Collapse, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 export class TaskList extends Component {
     static displayName = TaskList.name;
@@ -22,7 +23,40 @@ export class TaskList extends Component {
         this.populateTaskList();
     }
 
+    async afterSaveCell (row, cellName, cellValue) {
+        const token = await authService.getAccessToken();
+        var newGoal = row.goalTitle;
+        if (newGoal == "Common task") {
+            goalId = "";
+        }
+        else {
+            var goalId = this.state.goals.filter(goal => goal.title === newGoal)[0].goalId;
+        }
+        const response = await fetch("task/edit", {
+            method: 'PUT',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', },
+            body: JSON.stringify({
+                myTaskId: row.myTaskId,
+                creator: row.creator,
+                planDate:row.planDate,
+                completed: row.completed,
+                goalId: goalId,
+                priority: row.priority,
+                title: row.title
+            })
+        });
+        await response.json();
+    }
+
     renderTaskList(tasks) {
+        const cellEditProp = {
+            mode: 'click',
+            blurToSave: true,
+            afterSaveCell: this.afterSaveCell.bind(this)
+          };
+
         return (
             <div>
                 <h4 id="taskLabel">All tasks</h4>
@@ -75,7 +109,15 @@ export class TaskList extends Component {
                         </tbody> 
                     </table>
                     <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
-                </Collapse>                
+                </Collapse>
+                <div>
+                    <BootstrapTable data={ tasks }cellEdit={ cellEditProp } insertRow={ true }>
+                    <TableHeaderColumn dataField='myTaskId' isKey hidden>Id</TableHeaderColumn>
+                    <TableHeaderColumn dataField='title'>Title</TableHeaderColumn>
+                    <TableHeaderColumn dataField='planDate'>Plan date</TableHeaderColumn>
+                    <TableHeaderColumn dataField='goalTitle' editable={ { type: 'select', options: { values: this.state.goals.map(goal => goal.title) } } }>Goal</TableHeaderColumn>
+                    </BootstrapTable>
+                </div>                
             </div>
         )
     }
@@ -270,7 +312,15 @@ export class TaskList extends Component {
         const response = await fetch(url, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
-        const data = await response.json();        
-        this.setState({  tasks: data, loading: false});
+        const data = await response.json();
+        const goals = this.state.goals;
+        data.map(function (t) {
+            t.goalTitle = goals.filter(function(goal) {
+                return goal.goalId === t.goalId;
+            }).map(function(goal) {
+                return goal.title;
+            })[0];
+        });       
+        this.setState({  tasks: data, loading: false});        
     }
 }
