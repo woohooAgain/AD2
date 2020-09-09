@@ -45,7 +45,7 @@ namespace AgileDiary2.Controllers
         [Route("getForSprint/{sprintId}")]
         public IEnumerable<Result> GetForSprint(string sprintId)
         {
-            return _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId) && r.ResultOrigin.Equals(ResultOrigin.Sprint));
+            return _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId) && r.ResultType.Equals(ResultType.Sprint));
         }
 
         [HttpGet]
@@ -61,14 +61,14 @@ namespace AgileDiary2.Controllers
         [Route("{sprintId}/{resultOrigin}")]
         public IEnumerable<Result> ListResults(string sprintId, string resultOrigin)
         {
-            Enum.TryParse(resultOrigin, true, out ResultOrigin resultOriginEnum);
+            Enum.TryParse(resultOrigin, true, out ResultType resultOriginEnum);
             var sprintResults = _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId)).OrderBy(r => r.Date);
             switch (resultOriginEnum)
             {
-                case ResultOrigin.Undefined:
+                case ResultType.Undefined:
                     return sprintResults;
                 default:
-                    return sprintResults.Where(sr => sr.ResultOrigin.Equals(resultOriginEnum));
+                    return sprintResults.Where(sr => sr.ResultType.Equals(resultOriginEnum));
             }
         }
 

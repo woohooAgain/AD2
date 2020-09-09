@@ -1,18 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace AgileDiary2.Models
 {
     public class Goal
     {
-        public Guid GoalId { get; set; }
+        public ulong GoalId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Reward { get; set; }
-        public Guid SprintId { get; set; }
-        public Sprint Sprint { get; set; }
-        public ICollection<Milestone> Milestones { get; set; }
+        public ulong SprintId { get; set; }
+        public ICollection<MyTask> Milestones { get; set; }
+        public Area Area { get; set; }
+    }
+
+    public enum Area
+    {
+        Undefined,
+        Development,
+        Career,
+        Relations,
+        Other
     }
 }

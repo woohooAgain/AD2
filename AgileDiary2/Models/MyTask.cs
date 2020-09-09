@@ -7,13 +7,29 @@ namespace AgileDiary2.Models
 {
     public class MyTask
     {
-        public Guid MyTaskId { get; set; }
-        public Guid Creator { get; set; }
+        public ulong MyTaskId { get; set; }
+        public ulong Creator { get; set; }
         public string Title { get; set; }
-        public DateTime PlanDate { get; set; }
+        public string Condition { get; set; }
+        public DateTime EstimatedDate { get; set; }
         public DateTime? CompleteDate { get; set; }
-        public bool Completed { get; set; }
-        public Guid? GoalId { get; set; }
-        public bool Priority { get; set; }
+        public ulong GoalId { get; set; }
+        public Priority Priority { get; set; }
+        public Status Status { get; set; }
+    }
+
+    public enum Status
+    {
+        Undefined,
+        Finished,
+        Backlog,
+        Planned
+    }
+
+    public enum Priority
+    {
+        Undefined,
+        Low,
+        High
     }
 }

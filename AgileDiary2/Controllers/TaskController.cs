@@ -30,7 +30,7 @@ namespace AgileDiary2.Controllers
             DateTime baseDate = DateTime.Today;
             var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
             var thisWeekEnd = thisWeekStart.AddDays(7).AddSeconds(-1);
-            return tasks.Where(t => t.PlanDate < thisWeekEnd && !t.Completed);
+            return tasks.Where(t => t.EstimatedDate < thisWeekEnd && !t.Completed);
         }
 
         [HttpGet]
@@ -57,7 +57,7 @@ namespace AgileDiary2.Controllers
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             task.MyTaskId = Guid.NewGuid();
             task.Creator = new Guid(currentUser);
-            task.PlanDate = DateTime.Now.Date;
+            task.EstimatedDate = DateTime.Now.Date;
 
             _context.Tasks.Add(task);
             _context.SaveChanges();
