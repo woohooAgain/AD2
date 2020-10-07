@@ -7,13 +7,13 @@ namespace AgileDiary2.Models
 {
     public class MyTask
     {
-        public ulong MyTaskId { get; set; }
-        public ulong Creator { get; set; }
+        public int MyTaskId { get; set; }
+        public int Creator { get; set; }
         public string Title { get; set; }
         public string Condition { get; set; }
         public DateTime EstimatedDate { get; set; }
         public DateTime? CompleteDate { get; set; }
-        public ulong GoalId { get; set; }
+        public int GoalId { get; set; }
         public Priority Priority { get; set; }
         public Status Status { get; set; }
     }

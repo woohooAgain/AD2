@@ -2,7 +2,7 @@
 {
     public class Habit
     {
-        public ulong HabitId { get; set; }
+        public int HabitId { get; set; }
         public string Title { get; set; }
     }
 }

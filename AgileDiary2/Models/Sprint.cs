@@ -5,8 +5,8 @@ namespace AgileDiary2.Models
 {
     public class Sprint
     {
-        public ulong SprintId { get; set; }
-        public ulong Creator { get; set; }
+        public int SprintId { get; set; }
+        public int Creator { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Title { get; set; }

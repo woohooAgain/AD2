@@ -31,6 +31,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200917192857_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200917192857_InitialMigration.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="Uml\ClassModels\" />
   </ItemGroup>
 

@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AgileDiary2.Data.Migrations
+namespace AgileDiary2.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -78,6 +78,23 @@ namespace AgileDiary2.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PersistedGrants", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sprints",
+                columns: table => new
+                {
+                    SprintId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Creator = table.Column<int>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sprints", x => x.SprintId);
                 });
 
             migrationBuilder.CreateTable(
@@ -186,6 +203,106 @@ namespace AgileDiary2.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Goals",
+                columns: table => new
+                {
+                    GoalId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    Reward = table.Column<string>(nullable: true),
+                    SprintId = table.Column<int>(nullable: false),
+                    Area = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Goals", x => x.GoalId);
+                    table.ForeignKey(
+                        name: "FK_Goals_Sprints_SprintId",
+                        column: x => x.SprintId,
+                        principalTable: "Sprints",
+                        principalColumn: "SprintId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Results",
+                columns: table => new
+                {
+                    ResultId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Thanks = table.Column<string>(nullable: true),
+                    Achievement = table.Column<string>(nullable: true),
+                    Lesson = table.Column<string>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    SprintId = table.Column<int>(nullable: false),
+                    ResultType = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Results", x => x.ResultId);
+                    table.ForeignKey(
+                        name: "FK_Results_Sprints_SprintId",
+                        column: x => x.SprintId,
+                        principalTable: "Sprints",
+                        principalColumn: "SprintId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tasks",
+                columns: table => new
+                {
+                    MyTaskId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Creator = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    Condition = table.Column<string>(nullable: true),
+                    EstimatedDate = table.Column<DateTime>(nullable: false),
+                    CompleteDate = table.Column<DateTime>(nullable: true),
+                    GoalId = table.Column<int>(nullable: false),
+                    Priority = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tasks", x => x.MyTaskId);
+                    table.ForeignKey(
+                        name: "FK_Tasks_Goals_GoalId",
+                        column: x => x.GoalId,
+                        principalTable: "Goals",
+                        principalColumn: "GoalId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Habits",
+                columns: table => new
+                {
+                    HabitId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(nullable: true),
+                    ResultId = table.Column<int>(nullable: true),
+                    SprintId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Habits", x => x.HabitId);
+                    table.ForeignKey(
+                        name: "FK_Habits_Results_ResultId",
+                        column: x => x.ResultId,
+                        principalTable: "Results",
+                        principalColumn: "ResultId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Habits_Sprints_SprintId",
+                        column: x => x.SprintId,
+                        principalTable: "Sprints",
+                        principalColumn: "SprintId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -237,6 +354,21 @@ namespace AgileDiary2.Data.Migrations
                 column: "Expiration");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Goals_SprintId",
+                table: "Goals",
+                column: "SprintId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Habits_ResultId",
+                table: "Habits",
+                column: "ResultId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Habits_SprintId",
+                table: "Habits",
+                column: "SprintId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PersistedGrants_Expiration",
                 table: "PersistedGrants",
                 column: "Expiration");
@@ -245,6 +377,16 @@ namespace AgileDiary2.Data.Migrations
                 name: "IX_PersistedGrants_SubjectId_ClientId_Type",
                 table: "PersistedGrants",
                 columns: new[] { "SubjectId", "ClientId", "Type" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Results_SprintId",
+                table: "Results",
+                column: "SprintId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tasks_GoalId",
+                table: "Tasks",
+                column: "GoalId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -268,13 +410,28 @@ namespace AgileDiary2.Data.Migrations
                 name: "DeviceCodes");
 
             migrationBuilder.DropTable(
+                name: "Habits");
+
+            migrationBuilder.DropTable(
                 name: "PersistedGrants");
+
+            migrationBuilder.DropTable(
+                name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Results");
+
+            migrationBuilder.DropTable(
+                name: "Goals");
+
+            migrationBuilder.DropTable(
+                name: "Sprints");
         }
     }
 }

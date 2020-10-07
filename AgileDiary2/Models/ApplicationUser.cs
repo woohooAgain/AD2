@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AgileDiary2.Models
 {
-    public class ApplicationUser : IdentityUser<ulong>
+    public class ApplicationUser : IdentityUser
     {
     }
 }
