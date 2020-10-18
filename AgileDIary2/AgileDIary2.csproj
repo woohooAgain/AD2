@@ -33,10 +33,15 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200917192857_InitialMigration.cs" />
     <Compile Remove="Migrations\20200917192857_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200918170740_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200918170740_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20201015192825_ChangeUserId.cs" />
+    <Compile Remove="Migrations\20201015192825_ChangeUserId.Designer.cs" />
+    <Compile Remove="Migrations\20201018101719_InitialMigration.cs" />
+    <Compile Remove="Migrations\20201018101719_InitialMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="Uml\ClassModels\" />
   </ItemGroup>
 

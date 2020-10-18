@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgileDiary2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200918170740_InitialMigration")]
+    [Migration("20201018110553_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
