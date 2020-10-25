@@ -47,7 +47,6 @@ namespace AgileDiary2.Controllers
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //sprint.Creator = new Guid(currentUser);
-            //sprint.SprintId = Guid.NewGuid();
             sprint.StartDate = DateTime.Now.Date;
             sprint.EndDate = DateTime.Now.Date.AddDays(63);
             sprint.Goals = new List<Goal>

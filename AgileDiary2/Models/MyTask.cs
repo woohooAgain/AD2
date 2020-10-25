@@ -8,7 +8,7 @@ namespace AgileDiary2.Models
     public class MyTask
     {
         public int MyTaskId { get; set; }
-        public int Creator { get; set; }
+        public Guid Creator { get; set; }
         public string Title { get; set; }
         public string Condition { get; set; }
         public DateTime EstimatedDate { get; set; }

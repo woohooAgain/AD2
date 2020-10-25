@@ -4,14 +4,16 @@ using AgileDiary2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AgileDiary2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201025084443_FixCreatorWithoutTask")]
+    partial class FixCreatorWithoutTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,9 +152,6 @@ namespace AgileDiary2.Migrations
 
                     b.Property<string>("Condition")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("Creator")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("EstimatedDate")
                         .HasColumnType("datetime2");

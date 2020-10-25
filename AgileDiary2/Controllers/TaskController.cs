@@ -25,7 +25,7 @@ namespace AgileDiary2.Controllers
         public IEnumerable<MyTask> List()
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var tasks = _context.Tasks.Where(s => s.Creator.ToString() == currentUser);
+            //var tasks = _context.Tasks.Where(s => s.Creator.ToString() == currentUser);
             //Get tasks with plan date < this week end
             DateTime baseDate = DateTime.Today;
             var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
@@ -39,7 +39,8 @@ namespace AgileDiary2.Controllers
         public IEnumerable<MyTask> ListAll()
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return _context.Tasks.Where(s => s.Creator.ToString() == currentUser);
+            //return _context.Tasks.Where(s => s.Creator.ToString() == currentUser);
+            return new List<MyTask>();
         }
 
         [HttpPut]
