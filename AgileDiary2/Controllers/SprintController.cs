@@ -28,8 +28,9 @@ namespace AgileDiary2.Controllers
         [Route("list")]
         public IEnumerable<Sprint> List()
         {
-            var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var sprints = _context.Sprints.Where(s => s.Creator.ToString() == currentUser);
+            //var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //var sprints = _context.Sprints.Where(s => s.Creator.ToString() == currentUser);
+            var sprints = _context.Sprints;
             return sprints;
         }
 
@@ -46,87 +47,9 @@ namespace AgileDiary2.Controllers
         public string Post([FromBody]Sprint sprint)
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //sprint.Creator = new Guid(currentUser);
+            sprint.Creator = new Guid(currentUser);
             sprint.StartDate = DateTime.Now.Date;
             sprint.EndDate = DateTime.Now.Date.AddDays(63);
-            sprint.Goals = new List<Goal>
-            {
-                new Goal
-                {
-                    Title = "Goal 1",
-                    Description = "Finish goal 1",
-                    //GoalId = Guid.NewGuid(),
-                    Reward = "I will be the best at goal 1"
-                },
-                new Goal
-                {
-                    Title = "Goal 2",
-                    Description = "Finish goal 2",
-                    //GoalId = Guid.NewGuid(),
-                    Reward = "I will be the best at goal 2"
-                },
-                new Goal
-                {
-                    Title = "Goal 3",
-                    Description = "Finish goal 3",
-                    //GoalId = Guid.NewGuid(),
-                    Reward = "I will be the best at goal 3"
-                }
-            };
-            foreach (var goal in sprint.Goals)
-            {
-                //goal.Milestones = new List<Milestone>
-                //{
-                //    new Milestone
-                //    {
-                //        Description = "First step",
-                //        MilestoneId = Guid.NewGuid(),
-                //        ApproximateDate = sprint.StartDate.AddDays(16)
-                //    },
-                //    new Milestone
-                //    {
-                //        Description = "Second step",
-                //        MilestoneId = Guid.NewGuid(),
-                //        ApproximateDate = sprint.StartDate.AddDays(32)
-                //    },
-                //    new Milestone
-                //    {
-                //        Description = "Third step",
-                //        MilestoneId = Guid.NewGuid(),
-                //        ApproximateDate = sprint.StartDate.AddDays(47)
-                //    }
-                //};
-            }
-
-            for (int i = 0; i < 63; i++)
-            {
-                var newResult = new Result
-                {
-                    Date = DateTime.Now.AddDays(i),
-                    ResultType = ResultType.Day,
-                    SprintId = sprint.SprintId
-                };
-                _context.Results.Add(newResult);
-            }
-
-            for (var i = 0; i < 9; i++)
-            {
-                var newResult = new Result
-                {
-                    Date = DateTime.Now.AddDays(i*7 + 6),
-                    ResultType = ResultType.Week,
-                    //WeekNumber = i + 1,
-                    SprintId = sprint.SprintId
-                };
-                _context.Results.Add(newResult);
-            }
-
-            _context.Results.Add(new Result
-            {
-                Date = DateTime.Now.AddDays(62),
-                SprintId = sprint.SprintId,
-                ResultType = ResultType.Sprint
-            });
             _context.Sprints.Add(sprint);
             _context.SaveChanges();
             return sprint.SprintId.ToString();

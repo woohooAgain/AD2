@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { Input } from 'reactstrap';
-import { NewSprint } from './NewItemInTable';
+// import { NewSprint } from './NewItemInTable';
 import { Collapse, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -108,7 +108,7 @@ export class TaskList extends Component {
                             </tr>
                         </tbody> 
                     </table>
-                    <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
+                    {/* <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} /> */}
                 </Collapse>
                 <div>
                     <BootstrapTable data={ tasks }cellEdit={ cellEditProp } insertRow={ true }>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { Row, Input } from 'reactstrap';
-import { NewSprint } from './NewItemInTable';
+// import { NewSprint } from './NewItemInTable';
 import { Result } from './Result';
 import { NavLink } from 'reactstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -64,7 +64,7 @@ export class TaskTable extends Component {
                         </tr>
                     </tbody> 
                 </table>
-                <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
+                {/* <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} /> */}
             </div>
                 <BootstrapTable data={ tasks }>
                 <TableHeaderColumn dataField='title' isKey>Title</TableHeaderColumn>

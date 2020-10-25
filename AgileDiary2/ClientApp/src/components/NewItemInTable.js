@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 
-export class NewSprint extends Component {
+export class NewItemRow extends Component {
     render() {
         return (
             <div className="input-group mb-3">
