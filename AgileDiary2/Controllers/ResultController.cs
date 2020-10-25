@@ -24,7 +24,7 @@ namespace AgileDiary2.Controllers
         [Route("get/{resultId}")]
         public Result Get(string resultId)
         {
-            return _context.Result.First(r => r.ResultId.ToString().Equals(resultId));
+            return _context.Results.First(r => r.ResultId.ToString().Equals(resultId));
         }
 
         [HttpGet]
@@ -32,7 +32,8 @@ namespace AgileDiary2.Controllers
         public IEnumerable<Result> GetForDate(string sprintId, string stringDate)
         {
             DateTime.TryParse(stringDate, out var date);
-            return _context.Result.Where(r => r.Date.HasValue && r.Date.Value.Date.Equals(date.Date) && r.SprintId.ToString().Equals(sprintId));
+            return new List<Result>();
+            //return _context.Results.Where(r => r.Date.HasValue && r.Date.Value.Date.Equals(date.Date) && r.SprintId.ToString().Equals(sprintId));
         }
 
         private bool IsSameDate(DateTime? rDate, DateTime date)
@@ -45,7 +46,7 @@ namespace AgileDiary2.Controllers
         [Route("getForSprint/{sprintId}")]
         public IEnumerable<Result> GetForSprint(string sprintId)
         {
-            return _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId) && r.ResultOrigin.Equals(ResultOrigin.Sprint));
+            return _context.Results.Where(r => r.SprintId.ToString().Equals(sprintId) && r.ResultType.Equals(ResultType.Sprint));
         }
 
         [HttpGet]
@@ -54,21 +55,22 @@ namespace AgileDiary2.Controllers
         {
             DateTime.TryParse(stringDate, out var date);
             var weekNumber = CountWeekNumber(sprintId, date);
-            return _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId) && r.WeekNumber.Equals(weekNumber));
+            //return _context.Results.Where(r => r.SprintId.ToString().Equals(sprintId) && r.WeekNumber.Equals(weekNumber));
+            return new List<Result>();
         }
 
         [HttpGet]
         [Route("{sprintId}/{resultOrigin}")]
         public IEnumerable<Result> ListResults(string sprintId, string resultOrigin)
         {
-            Enum.TryParse(resultOrigin, true, out ResultOrigin resultOriginEnum);
-            var sprintResults = _context.Result.Where(r => r.SprintId.ToString().Equals(sprintId)).OrderBy(r => r.Date);
+            Enum.TryParse(resultOrigin, true, out ResultType resultOriginEnum);
+            var sprintResults = _context.Results.Where(r => r.SprintId.ToString().Equals(sprintId)).OrderBy(r => r.Date);
             switch (resultOriginEnum)
             {
-                case ResultOrigin.Undefined:
+                case ResultType.Undefined:
                     return sprintResults;
                 default:
-                    return sprintResults.Where(sr => sr.ResultOrigin.Equals(resultOriginEnum));
+                    return sprintResults.Where(sr => sr.ResultType.Equals(resultOriginEnum));
             }
         }
 
@@ -83,12 +85,13 @@ namespace AgileDiary2.Controllers
         [Route("edit")]
         public Guid Edit([FromBody] Result result)
         {
-            var oldResult = _context.Result.Single(r => r.ResultId.Equals(result.ResultId));
+            var oldResult = _context.Results.Single(r => r.ResultId.Equals(result.ResultId));
             oldResult.Thanks = result.Thanks;
             oldResult.Achievement = result.Achievement;
             oldResult.Lesson = result.Lesson;
             _context.SaveChanges();
-            return result.ResultId;
+            //return result.ResultId;
+            return Guid.Empty;
         }
     }
 }

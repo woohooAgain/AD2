@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace AgileDiary2.Data.Migrations
+namespace AgileDiary2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200207191930_AddGoalInDb")]
-    partial class AddGoalInDb
+    [Migration("20201025084811_TryChangeSprintCreator2")]
+    partial class TryChangeSprintCreator2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,9 +88,13 @@ namespace AgileDiary2.Data.Migrations
 
             modelBuilder.Entity("AgileDiary2.Models.Goal", b =>
                 {
-                    b.Property<Guid>("GoalId")
+                    b.Property<int>("GoalId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Area")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -98,8 +102,8 @@ namespace AgileDiary2.Data.Migrations
                     b.Property<string>("Reward")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SprintId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("SprintId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -108,14 +112,110 @@ namespace AgileDiary2.Data.Migrations
 
                     b.HasIndex("SprintId");
 
-                    b.ToTable("Goal");
+                    b.ToTable("Goals");
+                });
+
+            modelBuilder.Entity("AgileDiary2.Models.Habit", b =>
+                {
+                    b.Property<int>("HabitId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ResultId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SprintId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("HabitId");
+
+                    b.HasIndex("ResultId");
+
+                    b.HasIndex("SprintId");
+
+                    b.ToTable("Habits");
+                });
+
+            modelBuilder.Entity("AgileDiary2.Models.MyTask", b =>
+                {
+                    b.Property<int>("MyTaskId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("CompleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Condition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Creator")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EstimatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GoalId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MyTaskId");
+
+                    b.HasIndex("GoalId");
+
+                    b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("AgileDiary2.Models.Result", b =>
+                {
+                    b.Property<int>("ResultId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Achievement")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Lesson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ResultType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SprintId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Thanks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ResultId");
+
+                    b.HasIndex("SprintId");
+
+                    b.ToTable("Results");
                 });
 
             modelBuilder.Entity("AgileDiary2.Models.Sprint", b =>
                 {
-                    b.Property<Guid>("SprintId")
+                    b.Property<int>("SprintId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<Guid>("Creator")
                         .HasColumnType("uniqueidentifier");
@@ -125,6 +225,9 @@ namespace AgileDiary2.Data.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -353,9 +456,40 @@ namespace AgileDiary2.Data.Migrations
 
             modelBuilder.Entity("AgileDiary2.Models.Goal", b =>
                 {
-                    b.HasOne("AgileDiary2.Models.Sprint", "Sprint")
+                    b.HasOne("AgileDiary2.Models.Sprint", null)
                         .WithMany("Goals")
+                        .HasForeignKey("SprintId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AgileDiary2.Models.Habit", b =>
+                {
+                    b.HasOne("AgileDiary2.Models.Result", null)
+                        .WithMany("CompletedHabits")
+                        .HasForeignKey("ResultId");
+
+                    b.HasOne("AgileDiary2.Models.Sprint", null)
+                        .WithMany("Habits")
                         .HasForeignKey("SprintId");
+                });
+
+            modelBuilder.Entity("AgileDiary2.Models.MyTask", b =>
+                {
+                    b.HasOne("AgileDiary2.Models.Goal", null)
+                        .WithMany("Milestones")
+                        .HasForeignKey("GoalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AgileDiary2.Models.Result", b =>
+                {
+                    b.HasOne("AgileDiary2.Models.Sprint", null)
+                        .WithMany("Results")
+                        .HasForeignKey("SprintId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

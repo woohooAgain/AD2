@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using AgileDiary2.Data;
+using AgileDiary2.Infrastructure;
 using AgileDiary2.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +31,7 @@ namespace AgileDiary2
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
@@ -54,7 +55,7 @@ namespace AgileDiary2
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<ApplicationUser> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -75,6 +76,7 @@ namespace AgileDiary2
             app.UseRouting();
 
             app.UseAuthentication();
+            UserInitializer.SeedData(userManager);
             app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
