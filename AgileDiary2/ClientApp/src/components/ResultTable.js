@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { Row, Input } from 'reactstrap';
-import { NewSprint } from './NewItemInTable';
+import { NewSprint } from './ItemCreator';
 import { Result } from './Result';
 import { NavLink } from 'reactstrap';
 

@@ -1,8 +1,9 @@
 ﻿import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { NewItemRow } from './NewItemInTable';
-import { NavLink } from 'reactstrap';
+import { ItemCreator } from './ItemCreator';
+import { NavLink, Table, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import formatter from './../helpers/Formatter';
 
 
 export class SprintList extends Component {
@@ -18,10 +19,9 @@ export class SprintList extends Component {
     }
 
     renderSprintTable(sprints) {
-        //change accordign to https://reactstrap.github.io/components/tables/
         return (
             <div>
-                <table className = 'table table-striped' aria-labelledby='tabelLabel'>
+                <Table striped>
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -34,30 +34,17 @@ export class SprintList extends Component {
                         {sprints.map(sprint =>
                             <tr key={sprint.sprintId}>
                                 <td className="custom">{ sprint.title } </td>
-                                <td className="custom">{this.mapDate(sprint.startDate) } </td>
-                                <td className="custom">{this.mapDate(sprint.endDate)} </td>
-                                <td className="custom"><NavLink tag={Link} to={`/sprint/${sprint.sprintId}`}><button>Edit</button></NavLink></td>
-                                <td className="custom"><button id={`delete_${sprint.sprintId}`} type="button" onClick={() => this.deleteSprint()}>Delete</button></td>
+                                <td className="custom">{formatter.mapDate(sprint.startDate) } </td>
+                                <td className="custom">{formatter.mapDate(sprint.endDate)} </td>
+                                <td className="custom"><NavLink tag={Link} to={`/sprint/${sprint.sprintId}`}><Button color="primary">Edit</Button></NavLink></td>
+                                <td className="custom"><Button color="danger" id={`delete_${sprint.sprintId}`} type="button" onClick={() => this.deleteSprint()}>Delete</Button ></td>
                             </tr>
                         )}
-                        <tr>
-                        </tr>
                     </tbody> 
-                </table>
-                <NewItemRow value= {this.state.newTitle} onClick={() => this.handleAddSprint()} onChange={() => this.handleNewTitleChange()} />
+                </Table>
+                <ItemCreator value = {this.state.newTitle} onAddClick={() => this.handleAddSprint()} onTitleChange={() => this.handleNewTitleChange()} />
             </div>
         )
-    }
-
-    mapDate(date) {
-        let a = new Date(Date.parse(date));
-        const year = a.getFullYear();
-        const month = a.getMonth();
-        const day = a.getDate();
-
-        // Creating a new Date (with the delta)
-        const finalDate = new Date(year, month, day);
-        return finalDate.toISOString().substr(0, 10);
     }
 
     async deleteSprint(e) {
@@ -75,10 +62,6 @@ export class SprintList extends Component {
             body: JSON.stringify(body)
         });
         await this.refreshSprintList();
-        // var sprints = this.state.sprints;
-        // var sprint = sprints.filter(s => s.sprintId === sprintId)[0];
-        // sprints.splice(sprints.indexOf(sprint), 1);
-        // this.setState({ sprints: sprints });
     }
 
     extractSelectedItem(e) {
@@ -97,6 +80,7 @@ export class SprintList extends Component {
 
     handleAddSprint() {
         this.createSprint({ title: this.state.newTitle });
+        this.state.newTitle = "";
     }
 
     async createSprint(sprint) {

@@ -19,21 +19,21 @@ export class Result extends Component {
                 <NavLink tag={Link} className="text-dark" to={`/result/${this.state.sprintId}/${this.state.title}`}>Inspect all</NavLink>
                 <FormGroup>
                     <Label for="thanks">Thanks</Label>
-                    <Input id={`thanks_${this.state.result.resultId}`} placeholder="Thanks" value={this.state.result.thanks}
+                    {/* <Input id={`thanks_${this.state.result.resultId}`} placeholder="Thanks" value={this.state.result.thanks}
                         onChange={() => this.editResultThanks()} onBlur={() => this.saveResult()}
-                    />
+                    /> */}
                 </FormGroup>
                 <FormGroup>
                     <Label for="achievement">Achievement</Label>
-                    <Input id={`chievement_${this.state.result.resultId}`} placeholder="Achievement" value={this.state.result.achievement}
+                    {/* <Input id={`achievement_${this.state.result.resultId}`} placeholder="Achievement" value={this.state.result.achievement}
                         onChange={() => this.editResultAchievement()} onBlur={() => this.saveResult()}
-                    />
+                    /> */}
                 </FormGroup>
                 <FormGroup>
                     <Label for="lesson">Lesson</Label>
-                    <Input id={`lesson_${this.state.result.resultId}`} placeholder="Lesson" value={this.state.result.lesson}
+                    {/* <Input id={`lesson_${this.state.result.resultId}`} placeholder="Lesson" value={this.state.result.lesson}
                         onChange={() => this.editResultLesson()} onBlur={() => this.saveResult()}
-                    />
+                    /> */}
                 </FormGroup>
             </div>
         )

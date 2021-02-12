@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { Collapse, Row, Input, Col } from 'reactstrap';
-import { NewSprint } from './NewItemInTable';
+import { ItemCreator } from './ItemCreator';
 import { Result } from './Result';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 

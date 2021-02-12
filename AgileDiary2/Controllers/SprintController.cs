@@ -69,9 +69,12 @@ namespace AgileDiary2.Controllers
         public bool Delete(string[] sprintIds)
         {
             var sprintsToDelete = new List<Sprint>(sprintIds.Length);
-            foreach (var id in sprintIds)
+            foreach (var stringId in sprintIds)
             {
-                sprintsToDelete.Add(_context.Sprints.First(s => s.SprintId.Equals(new Guid(id))));
+                if (int.TryParse(stringId, out var id))
+                {
+                    sprintsToDelete.Add(_context.Sprints.First(s => s.SprintId.Equals(id)));
+                }
             }
             _context.RemoveRange(sprintsToDelete);
             _context.SaveChanges();

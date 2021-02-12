@@ -10,7 +10,7 @@ export class GoalList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { goals: this.props.goals, loading: false, activeTab: this.props.goals[0].goalId, isOpen: true, collapseButtonName:"Collapse"};
+        this.state = { goals: this.props.goals, loading: false, activeTab: this.props.goals.length > 0 ? this.props.goals[0].goalId : null, isOpen: true, collapseButtonName:"Collapse"};
     }
 
     collapse() {
