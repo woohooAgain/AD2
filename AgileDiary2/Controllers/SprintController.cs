@@ -28,9 +28,8 @@ namespace AgileDiary2.Controllers
         [Route("list")]
         public IEnumerable<Sprint> List()
         {
-            //var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //var sprints = _context.Sprints.Where(s => s.Creator.ToString() == currentUser);
-            var sprints = _context.Sprints;
+            var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var sprints = _context.Sprints.Where(s => s.Creator.ToString() == currentUser);
             return sprints;
         }
 
@@ -47,9 +46,60 @@ namespace AgileDiary2.Controllers
         public string Post([FromBody]Sprint sprint)
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            sprint.Creator = new Guid(currentUser);
+            var creator = new Guid(currentUser);
+            sprint.Creator = creator;
             sprint.StartDate = DateTime.Now.Date;
             sprint.EndDate = DateTime.Now.Date.AddDays(63);
+
+            sprint.Goals = new List<Goal>
+            {
+                new Goal
+                {
+                    Title = "Goal 1",
+                    Description = "Finish goal 1",
+                    Reward = "I will be the best at goal 1"
+                },
+                new Goal
+                {
+                    Title = "Goal 2",
+                    Description = "Finish goal 2",
+                    Reward = "I will be the best at goal 2"
+                },
+                new Goal
+                {
+                    Title = "Goal 3",
+                    Description = "Finish goal 3",
+                    Reward = "I will be the best at goal 3"
+                }
+            };
+            foreach (var goal in sprint.Goals)
+            {
+                goal.Milestones = new List<MyTask>
+                {
+                    new MyTask
+                    {
+                        Title = "First step",
+                        Creator = creator,
+                        EstimatedDate = sprint.StartDate.AddDays(16),
+                        Status = Status.Planned
+                    },
+                    new MyTask
+                    {
+                        Title = "Second step",
+                        Creator = creator,
+                        EstimatedDate = sprint.StartDate.AddDays(32),
+                        Status = Status.Planned
+                    },
+                    new MyTask
+                    {
+                        Title = "Third step",
+                        Creator = creator,
+                        EstimatedDate = sprint.StartDate.AddDays(47),
+                        Status = Status.Planned
+                    }
+                };
+            }
+
             _context.Sprints.Add(sprint);
             _context.SaveChanges();
             return sprint.SprintId.ToString();

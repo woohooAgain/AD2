@@ -3,8 +3,8 @@ import authService from './api-authorization/AuthorizeService'
 import { GoalList } from './GoalList';
 import { TaskList } from './TaskList';
 import { ResultList } from './ResultList';
-import { Collapse, Row, Col, Form, Label, Input  } from 'reactstrap';
-
+import { Collapse, Row, Col, Form, Label, Input, Button  } from 'reactstrap';
+import formatter from './../helpers/Formatter';
 
 export class Sprint extends Component {
     static displayName = Sprint.name;
@@ -28,24 +28,6 @@ export class Sprint extends Component {
         this.setState({ loading: false, sprint: sprint});
     }
 
-    mapDate(date) {
-        let a = new Date(Date.parse(date));
-        let year = a.getFullYear();
-        let month = a.getMonth() + 1;
-        let day = a.getDate();
-
-        // Creating a new Date (with the delta)
-        // const finalDate = new Date(year, month, day);
-        // return finalDate.toLocaleDateString().substr(0, 10);
-        if (month < 10) {
-            month = "0" + month;
-        }
-        if (day < 10) {
-            day = "0" + day;
-        }
-        return year + "-" + month + "-" + day;
-    }
-
     isWeekEnd() {
         let startDate = new Date(Date.parse(this.state.sprint.startDate));
         let currentDate = new Date();
@@ -57,8 +39,8 @@ export class Sprint extends Component {
     }
 
     renderSprintFields() {
-        let startDate = this.mapDate(this.state.sprint.startDate);
-        let finishDate = this.mapDate(this.state.sprint.endDate);
+        let startDate = formatter.mapDate(this.state.sprint.startDate);
+        let finishDate = formatter.mapDate(this.state.sprint.endDate);
         return (
             <Form>
                 <h3>{this.state.sprint.title}</h3>
@@ -66,7 +48,7 @@ export class Sprint extends Component {
                     Do not forget to add week result.
                 </Collapse>
                 <Row>
-                    <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleFinishSprint()}>Finish sprint</button>
+                    <Button color="primary" onClick={() => this.handleFinishSprint()}>Finish sprint</Button>
                 </Row>
                 <Row>
                     <Col>
@@ -87,7 +69,7 @@ export class Sprint extends Component {
                             name="date2"
                             id="exampleDate3"
                             placeholder="date placeholder2"
-                            value={this.mapDate(new Date())} />
+                            value={formatter.mapDate(new Date())} />
                     </Col>
                     <Col>
                         <Label for="exampleDate">End date</Label>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Collapse, Row, Input, Col } from 'reactstrap';
+import { Button, Collapse, Row, Input, Col } from 'reactstrap';
 import { ItemCreator } from './ItemCreator';
 import { Result } from './Result';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -26,7 +26,7 @@ export class ResultList extends Component {
         return (
             <div>
                 <h4>Results</h4>
-                <button className="btn btn-outline-secondary" type="button" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</button>
+                <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
                 <Collapse isOpen={this.state.isOpen}>
                     <Row>
                         <Col md="4">

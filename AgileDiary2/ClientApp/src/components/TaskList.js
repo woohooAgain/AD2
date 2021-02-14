@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Input } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 // import { NewSprint } from './NewItemInTable';
 import { Collapse, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
@@ -60,7 +60,7 @@ export class TaskList extends Component {
         return (
             <div>
                 <h4 id="taskLabel">All tasks</h4>
-                <button className="btn btn-outline-secondary" type="button" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</button>
+                <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
                 <Collapse isOpen={this.state.isOpen}>
                     <NavLink tag={Link} className="text-dark" to={`/task/list`}>Inspect all</NavLink>
                     <table className = 'table table-striped' aria-labelledby='tabelLabel'>

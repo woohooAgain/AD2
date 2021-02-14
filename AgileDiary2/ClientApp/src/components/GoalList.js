@@ -27,7 +27,7 @@ export class GoalList extends Component {
         return (
             <div>
                 <h4 id="goalLabel">Goals in sprint</h4>
-                 <button className="btn btn-outline-secondary" type="button" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</button>
+                <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
                 <Collapse isOpen={this.state.isOpen}>
                     <Nav tabs>
                         {goals.map(goal =>
