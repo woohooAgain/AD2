@@ -11,7 +11,8 @@ export class SprintList extends Component {
 
     constructor(props) {
         super();
-        this.state = { sprints: [], loading: true, newTitle: '', allChecked:false };
+        this.state = { sprints: [], loading: true, newTitle: '', allChecked:false }
+        this.itemCreator = React.createRef();
     }
 
     componentDidMount() {
@@ -19,6 +20,12 @@ export class SprintList extends Component {
     }
 
     renderSprintTable(sprints) {
+        let itemCreatorProps = {
+            value: this.state.newTitle,
+            onAddClick: () => this.handleAddSprint(),
+            onTitleChange: () => this.handleNewTitleChange(),
+            placeholder: "New sprint's title"
+        }
         return (
             <div>
                 <Table striped>
@@ -37,20 +44,17 @@ export class SprintList extends Component {
                                 <td className="custom">{formatter.mapDate(sprint.startDate) } </td>
                                 <td className="custom">{formatter.mapDate(sprint.endDate)} </td>
                                 <td className="custom"><NavLink tag={Link} to={`/sprint/${sprint.sprintId}`}><Button color="primary">Edit</Button></NavLink></td>
-                                <td className="custom"><Button color="danger" id={`delete_${sprint.sprintId}`} type="button" onClick={() => this.deleteSprint()}>Delete</Button ></td>
+                                <td className="custom"><Button color="danger" type="button" onClick={() => this.deleteSprint(sprint.sprintId)}>Delete</Button ></td>
                             </tr>
                         )}
                     </tbody> 
                 </Table>
-                <ItemCreator value = {this.state.newTitle} onAddClick={() => this.handleAddSprint()} onTitleChange={() => this.handleNewTitleChange()} />
+                <ItemCreator {...itemCreatorProps} />
             </div>
         )
     }
 
-    async deleteSprint(e) {
-        var sprintId;
-        ({ sprintId, e } = this.extractSelectedItem(e));
-
+    async deleteSprint(sprintId) {
         const token = await authService.getAccessToken();
         var body = [sprintId];
         await fetch("sprint/delete", {
@@ -64,14 +68,6 @@ export class SprintList extends Component {
         await this.refreshSprintList();
     }
 
-    extractSelectedItem(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var sprintId = targetId.split('_')[1];
-        return { sprintId, e };
-    }
-
     handleNewTitleChange(e) {
         e = e || window.event;
         var target = e.target || e.srcElement;
@@ -80,7 +76,7 @@ export class SprintList extends Component {
 
     handleAddSprint() {
         this.createSprint({ title: this.state.newTitle });
-        this.state.newTitle = "";
+        this.setState({ newTitle: '' });
     }
 
     async createSprint(sprint) {
