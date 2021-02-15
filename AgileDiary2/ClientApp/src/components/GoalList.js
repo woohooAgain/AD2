@@ -43,34 +43,27 @@ export class GoalList extends Component {
                         {goals.map(goal =>
                             <TabPane key={goal.goalId} tabId={goal.goalId} >
                                 <Row>
-                                    <Col sm="4">
-                                        <FormGroup>
-                                            <Label for="title">Title</Label>
-                                            <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
-                                                onChange={() => this.handleOnTitleChange()}  onBlur={() => this.saveGoal()}
-                                            />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Label for="description">Description</Label>
-                                            <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description}
-                                                onChange={() => this.handleOnDescrptionChange()} onBlur={() => this.saveGoal()}
-                                            />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Label for="reward">Reward</Label>
-                                            <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward}
-                                                onChange={() => this.handleOnRewardChange()} onBlur={() => this.saveGoal()}
-                                            />
-                                        </FormGroup>
+                                    <Col sm="7">
+                                        <Label for="title">Title</Label>
+                                        <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
+                                            onChange={() => this.handleOnTitleChange()}  onBlur={() => this.saveGoal()}
+                                        />
+                                        <Label for="description">Description</Label>
+                                        <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description} type="textarea"
+                                            onChange={() => this.handleOnDescrptionChange()} onBlur={() => this.saveGoal()}
+                                        />
+                                        <Label for="reward">Reward</Label>
+                                        <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward} type="textarea"
+                                            onChange={() => this.handleOnRewardChange()} onBlur={() => this.saveGoal()}
+                                        />
                                     </Col>
-                                    <Col sm="8">
-                                        <FormGroup>
-                                            {goal.milestones.map(m => 
-                                                <Milestone milestone={m}
-                                                onChange={() => this.handleOnMilestoneTitleChange()} blur={() => this.saveMilestone()}
-                                                />
-                                            )}
-                                        </FormGroup>                                
+                                    <Col sm="5">
+                                        <Label>Milestones</Label>
+                                        {goal.milestones.map(m => 
+                                            <Milestone milestone={m}
+                                            onChange={() => this.handleOnMilestoneTitleChange()} blur={() => this.saveMilestone()}
+                                            />
+                                        )}
                                     </Col>
                                 </Row>                            
                             </TabPane>
@@ -115,7 +108,7 @@ export class GoalList extends Component {
         e = e || window.event;
         var target = e.target || e.srcElement;
         var targetId = target.id;
-        var goalId = targetId.split('_')[1];
+        var goalId = parseInt(targetId.split('_')[1]);
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
         goal.title = target.value;
@@ -127,7 +120,7 @@ export class GoalList extends Component {
         e = e || window.event;
         var target = e.target || e.srcElement;
         var targetId = target.id;
-        var goalId = targetId.split('_')[1];
+        var goalId = parseInt(targetId.split('_')[1]);
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
         goal.description = target.value;
@@ -139,7 +132,7 @@ export class GoalList extends Component {
         e = e || window.event;
         var target = e.target || e.srcElement;
         var targetId = target.id;
-        var goalId = targetId.split('_')[1];
+        var goalId = parseInt(targetId.split('_')[1]);
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
         goal.reward = target.value;
@@ -151,7 +144,7 @@ export class GoalList extends Component {
         e = e || window.event;
         var target = e.target || e.srcElement;
         var targetId = target.id;
-        var goalId = targetId.split('_')[1];
+        var goalId = parseInt(targetId.split('_')[1]);
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
         await this.editGoal(goal);

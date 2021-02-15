@@ -47,44 +47,31 @@ export class Sprint extends Component {
                 <Collapse isOpen={this.isWeekEnd()}>
                     Do not forget to add week result.
                 </Collapse>
-                <Row>
-                    <Button color="primary" onClick={() => this.handleFinishSprint()}>Finish sprint</Button>
-                </Row>
+                <Button color="primary" onClick={() => this.handleFinishSprint()}>Finish sprint</Button>
                 <Row>
                     <Col>
-                        <Label for="exampleDate">Start date</Label>
+                        <Label>Start date</Label>
                         <Input
                             readOnly
                             type="date"
-                            name="date1"
-                            id="exampleDate1"
-                            placeholder="date placeholder1"
                             value={startDate} />
                     </Col>
                     <Col>
-                        <Label for="exampleDate">Current date</Label>
+                        <Label>Current date</Label>
                         <Input
                             readOnly
                             type="date"
-                            name="date2"
-                            id="exampleDate3"
-                            placeholder="date placeholder2"
                             value={formatter.mapDate(new Date())} />
                     </Col>
                     <Col>
-                        <Label for="exampleDate">End date</Label>
+                        <Label>End date</Label>
                         <Input
                             readOnly
                             type="date"
-                            name="date2"
-                            id="exampleDate2"
-                            placeholder="date placeholder2"
                             value={finishDate} />
                     </Col>
                 </Row>
-                <Row>
                     <GoalList goals={this.state.sprint.goals} />
-                </Row>
                 <Row>
                     <TaskList goals={this.state.sprint.goals} />
                 </Row>

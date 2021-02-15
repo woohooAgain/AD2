@@ -39,15 +39,14 @@ export class Milestone extends Component {
     renderSprintFields() {        
         return (
             <div>
-                <FormGroup>                
-                    <Label>Milestone</Label>
+                <FormGroup>                                    
                     <Row>
-                        <Col>
-                            <Input id={`${this.state.milestone.goalId}_${this.state.milestone.milestoneId}_text`} placeholder="Default milestone" defaultValue={this.state.milestone.description} 
+                        <Col sm="7">
+                            <Input id={`${this.state.milestone.goalId}_${this.state.milestone.milestoneId}_text`} placeholder="Default milestone" defaultValue={this.state.milestone.title} 
                             onChange={() => this.handleOnMilestoneTitleChange()} onBlur={()=>this.saveMilestone()}/>
                         </Col>
-                        <Col>
-                            <Input type="date" id={`${this.state.milestone.goalId}_${this.state.milestone.milestoneId}_date`} defaultValue={this.mapDate(this.state.milestone.approximateDate)} 
+                        <Col sm="5">
+                            <Input type="date" id={`${this.state.milestone.goalId}_${this.state.milestone.milestoneId}_date`} defaultValue={this.mapDate(this.state.milestone.estimatedDate)} 
                             onChange={() => this.handleOnMilestoneDateChange()} onBlur={()=>this.saveMilestone()}/>
                         </Col>                    
                     </Row>
