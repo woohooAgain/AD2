@@ -23,12 +23,10 @@ export class Result extends Component {
                         onChange={() => this.editResultThanks()} onBlur={() => this.saveResult()}
                     /> */}
                 </FormGroup>
-                <FormGroup>
                     <Label for="achievement">Achievement</Label>
                     {/* <Input id={`achievement_${this.state.result.resultId}`} placeholder="Achievement" value={this.state.result.achievement}
                         onChange={() => this.editResultAchievement()} onBlur={() => this.saveResult()}
                     /> */}
-                </FormGroup>
                 <FormGroup>
                     <Label for="lesson">Lesson</Label>
                     {/* <Input id={`lesson_${this.state.result.resultId}`} placeholder="Lesson" value={this.state.result.lesson}

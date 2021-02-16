@@ -10,7 +10,7 @@ export class GoalList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { goals: this.props.goals, loading: false, activeTab: this.props.goals.length > 0 ? this.props.goals[0].goalId : null, isOpen: true, collapseButtonName:"Collapse"};
+        this.state = { sprintId: this.props.sprintId, goals: this.props.goals, loading: false, activeTab: this.props.goals.length > 0 ? this.props.goals[0].goalId : null, isOpen: true, collapseButtonName:"Collapse"};
     }
 
     collapse() {
@@ -28,6 +28,7 @@ export class GoalList extends Component {
             <div>
                 <h4 id="goalLabel">Goals in sprint</h4>
                 <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
+                <Button outline  size="sm" color="primary" onClick={()=>this.createGoal()}>Create goal</Button>
                 <Collapse isOpen={this.state.isOpen}>
                     <Nav tabs>
                         {goals.map(goal =>
@@ -72,6 +73,32 @@ export class GoalList extends Component {
                 </Collapse>
             </div>
         )
+    }
+
+    async createGoal()
+    {
+        const token = await authService.getAccessToken();
+        let newGoal = {
+            title: 'Default title',
+            description: 'Default description',
+            reward: 'Default reward',
+            sprintId: this.state.sprintId
+        };
+        let createResponse = await fetch("goals/create", {
+            method: 'POST',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', },
+            body: JSON.stringify(newGoal)
+        });
+        const data = await createResponse.json();
+        let goalResponse = await fetch(`/goals/get/${data}`, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        let createdGoal = await goalResponse.json();
+        let currentGoals = this.state.goals;
+        currentGoals.push(createdGoal);
+        this.setState({goals:currentGoals});
     }
 
     handleOnMilestoneTitleChange(e)

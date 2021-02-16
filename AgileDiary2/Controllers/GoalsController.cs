@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using AgileDiary2.Data;
@@ -28,11 +29,45 @@ namespace AgileDiary2.Controllers
             return goals;
         }
 
+        [HttpPost]
+        [Route("create")]
+        public string Post([FromBody]Goal goal)
+        {
+            var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var creator = new Guid(currentUser); goal.Milestones = new List<MyTask>
+                {
+                    new MyTask
+                    {
+                        Title = "First step",
+                        Creator = creator,
+                        EstimatedDate = DateTime.Now.Date,
+                        Status = Status.Planned
+                    },
+                    new MyTask
+                    {
+                        Title = "Second step",
+                        Creator = creator,
+                        EstimatedDate = DateTime.Now.Date,
+                        Status = Status.Planned
+                    },
+                    new MyTask
+                    {
+                        Title = "Third step",
+                        Creator = creator,
+                        EstimatedDate = DateTime.Now.Date,
+                        Status = Status.Planned
+                    }
+                };
+            _context.Goals.Add(goal);
+            _context.SaveChanges();
+            return goal.GoalId.ToString();
+        }
+
         [HttpGet]
         [Route("get/{goalId}")]
-        public Goal Get(string goalId)
+        public Goal Get(int goalId)
         {
-            var result = _context.Goals.FirstOrDefault(s => s.GoalId.ToString() == goalId);
+            var result = _context.Goals.Include(g => g.Milestones).FirstOrDefault(s => s.GoalId == goalId);
             return result;
         }
 
@@ -62,6 +97,16 @@ namespace AgileDiary2.Controllers
             _context.Update(goal);
             _context.SaveChanges();
             return _context.Goals.First(t => t.GoalId.Equals(goal.GoalId));
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public bool Delete(int goalId)
+        {
+            var goal = _context.Goals.FirstOrDefault(g => g.GoalId == goalId);
+            _context.Goals.Remove(goal);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

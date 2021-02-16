@@ -61,8 +61,8 @@ export class TaskList extends Component {
             <div>
                 <h4 id="taskLabel">All tasks</h4>
                 <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
+                <NavLink tag={Link} className="text-dark" to={`/task/list`}>Inspect all</NavLink>
                 <Collapse isOpen={this.state.isOpen}>
-                    <NavLink tag={Link} className="text-dark" to={`/task/list`}>Inspect all</NavLink>
                     <table className = 'table table-striped' aria-labelledby='tabelLabel'>
                         <thead>
                             <tr>
@@ -110,14 +110,6 @@ export class TaskList extends Component {
                     </table>
                     {/* <NewSprint value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} /> */}
                 </Collapse>
-                <div>
-                    <BootstrapTable data={ tasks }cellEdit={ cellEditProp } insertRow={ true }>
-                    <TableHeaderColumn dataField='myTaskId' isKey hidden>Id</TableHeaderColumn>
-                    <TableHeaderColumn dataField='title'>Title</TableHeaderColumn>
-                    <TableHeaderColumn dataField='planDate'>Plan date</TableHeaderColumn>
-                    <TableHeaderColumn dataField='goalTitle' editable={ { type: 'select', options: { values: this.state.goals.map(goal => goal.title) } } }>Goal</TableHeaderColumn>
-                    </BootstrapTable>
-                </div>                
             </div>
         )
     }
