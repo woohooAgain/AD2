@@ -29,6 +29,7 @@ export class GoalList extends Component {
                 <h4 id="goalLabel">Goals in sprint</h4>
                 <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
                 <Button outline  size="sm" color="primary" onClick={()=>this.createGoal()}>Create goal</Button>
+                <Button outline  size="sm" color="danger" onClick={()=>this.deleteGoal(this.state.activeTab)}>Delete goal</Button>
                 <Collapse isOpen={this.state.isOpen}>
                     <Nav tabs>
                         {goals.map(goal =>
@@ -47,15 +48,15 @@ export class GoalList extends Component {
                                     <Col sm="7">
                                         <Label for="title">Title</Label>
                                         <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
-                                            onChange={() => this.handleOnTitleChange()}  onBlur={() => this.saveGoal()}
+                                            onChange={() => this.handleOnTitleChange()}  onBlur={() => this.saveGoal(goal.goalId)}
                                         />
                                         <Label for="description">Description</Label>
                                         <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description} type="textarea"
-                                            onChange={() => this.handleOnDescrptionChange()} onBlur={() => this.saveGoal()}
+                                            onChange={() => this.handleOnDescrptionChange()} onBlur={() => this.saveGoal(goal.goalId)}
                                         />
                                         <Label for="reward">Reward</Label>
                                         <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward} type="textarea"
-                                            onChange={() => this.handleOnRewardChange()} onBlur={() => this.saveGoal()}
+                                            onChange={() => this.handleOnRewardChange()} onBlur={() => this.saveGoal(goal.goalId)}
                                         />
                                     </Col>
                                     <Col sm="5">
@@ -101,6 +102,25 @@ export class GoalList extends Component {
         this.setState({goals:currentGoals});
     }
 
+    async deleteGoal(goalId)
+    {
+        const token = await authService.getAccessToken();
+        await fetch(`goals/delete/${goalId}`, {
+            method: 'DELETE',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', }
+        });
+        let oldGoals = this.state.goals;
+        let newGoals = oldGoals.filter(function(item) {
+            return item.goalId !== goalId;
+        })
+        this.setState({goals:newGoals});
+        if (this.state.goals.length > 0) {
+            this.setState({activeTab:this.state.goals[0].goalId});
+        }
+    }
+
     handleOnMilestoneTitleChange(e)
     {
         e = e || window.event;
@@ -139,7 +159,6 @@ export class GoalList extends Component {
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
         goal.title = target.value;
-        goals[goalId] = goal;
         this.setState({ goals: goals });
     }
 
@@ -151,7 +170,6 @@ export class GoalList extends Component {
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
         goal.description = target.value;
-        goals[goalId] = goal;
         this.setState({ goals: goals });
         }
 
@@ -163,15 +181,10 @@ export class GoalList extends Component {
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
         goal.reward = target.value;
-        goals[goalId] = goal;
         this.setState({ goals: goals });
     }
 
-    async saveGoal(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var goalId = parseInt(targetId.split('_')[1]);
+    async saveGoal(goalId) {
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === goalId)[0];
         await this.editGoal(goal);

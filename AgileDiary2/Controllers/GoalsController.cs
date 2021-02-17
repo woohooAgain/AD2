@@ -100,7 +100,7 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpDelete]
-        [Route("delete")]
+        [Route("delete/{goalId}")]
         public bool Delete(int goalId)
         {
             var goal = _context.Goals.FirstOrDefault(g => g.GoalId == goalId);
