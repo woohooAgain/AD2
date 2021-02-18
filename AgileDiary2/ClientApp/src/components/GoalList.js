@@ -11,6 +11,8 @@ export class GoalList extends Component {
     constructor(props) {
         super(props);
         this.state = { sprintId: this.props.sprintId, goals: this.props.goals, loading: false, activeTab: this.props.goals.length > 0 ? this.props.goals[0].goalId : null, isOpen: true, collapseButtonName:"Collapse"};
+
+        this.handleOnChange = this.handleOnChange.bind(this);
     }
 
     collapse() {
@@ -47,16 +49,16 @@ export class GoalList extends Component {
                                 <Row>
                                     <Col sm="7">
                                         <Label for="title">Title</Label>
-                                        <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title}
-                                            onChange={() => this.handleOnTitleChange()}  onBlur={() => this.saveGoal(goal.goalId)}
+                                        <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title} name="title"
+                                            onChange={this.handleOnChange}  onBlur={() => this.saveGoal(goal.goalId)}
                                         />
                                         <Label for="description">Description</Label>
-                                        <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description} type="textarea"
-                                            onChange={() => this.handleOnDescrptionChange()} onBlur={() => this.saveGoal(goal.goalId)}
+                                        <Input id={`description_${goal.goalId}`} placeholder="Goal's description" defaultValue={goal.description} type="textarea" name="description"
+                                            onChange={this.handleOnChange} onBlur={() => this.saveGoal(goal.goalId)}
                                         />
                                         <Label for="reward">Reward</Label>
-                                        <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward} type="textarea"
-                                            onChange={() => this.handleOnRewardChange()} onBlur={() => this.saveGoal(goal.goalId)}
+                                        <Input id={`reward_${goal.goalId}`} placeholder="Goal's reward" defaultValue={goal.reward} type="textarea" name="reward"
+                                            onChange={this.handleOnChange} onBlur={() => this.saveGoal(goal.goalId)}
                                         />
                                     </Col>
                                     <Col sm="5">
@@ -150,37 +152,11 @@ export class GoalList extends Component {
         this.editGoal(goal);
     }
 
-    handleOnTitleChange(e)
+    handleOnChange(e)
     {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var goalId = parseInt(targetId.split('_')[1]);
         var goals = this.state.goals;
-        var goal = goals.filter(goal => goal.goalId === goalId)[0];
-        goal.title = target.value;
-        this.setState({ goals: goals });
-    }
-
-    handleOnDescrptionChange(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var goalId = parseInt(targetId.split('_')[1]);
-        var goals = this.state.goals;
-        var goal = goals.filter(goal => goal.goalId === goalId)[0];
-        goal.description = target.value;
-        this.setState({ goals: goals });
-        }
-
-    handleOnRewardChange(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var goalId = parseInt(targetId.split('_')[1]);
-        var goals = this.state.goals;
-        var goal = goals.filter(goal => goal.goalId === goalId)[0];
-        goal.reward = target.value;
+        var goal = goals.filter(goal => goal.goalId === this.state.activeTab)[0];
+        goal[e.target.name] = e.target.value;
         this.setState({ goals: goals });
     }
 
