@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import authService from './api-authorization/AuthorizeService'
-import { GoalList } from './GoalList';
-import { TaskList } from './TaskList';
-import { ResultList } from './ResultList';
 import { Row, Col, Form, Label, Input, FormGroup  } from 'reactstrap';
 
 
@@ -12,6 +8,8 @@ export class Milestone extends Component {
     constructor(props) {
         super(props);
         this.state = { milestone: this.props.milestone, saveMilestone: this.props.blur};
+
+        this.handleOnChange = this.handleOnChange.bind(this);
     }
 
     componentDidMount() {
@@ -42,12 +40,12 @@ export class Milestone extends Component {
                 <FormGroup>                                    
                     <Row>
                         <Col sm="7">
-                            <Input id={`${this.state.milestone.goalId}_${this.state.milestone.milestoneId}_text`} placeholder="Default milestone" defaultValue={this.state.milestone.title} 
-                            onChange={() => this.handleOnMilestoneTitleChange()} onBlur={()=>this.saveMilestone()}/>
+                            <Input id={`${this.state.milestone.goalId}_${this.state.milestone.milestoneId}_text`} placeholder="Default milestone" defaultValue={this.state.milestone.title} name="title"
+                            onChange={this.handleOnChange} onBlur={()=>this.saveMilestone()}/>
                         </Col>
                         <Col sm="5">
-                            <Input type="date" id={`${this.state.milestone.goalId}_${this.state.milestone.milestoneId}_date`} defaultValue={this.mapDate(this.state.milestone.estimatedDate)} 
-                            onChange={() => this.handleOnMilestoneDateChange()} onBlur={()=>this.saveMilestone()}/>
+                            <Input type="date" id={`${this.state.milestone.goalId}_${this.state.milestone.milestoneId}_date`} defaultValue={this.mapDate(this.state.milestone.estimatedDate)}  name="estimatedDate"
+                            onChange={this.handleOnChange} onBlur={()=>this.saveMilestone()}/>
                         </Col>                    
                     </Row>
                 </FormGroup>
@@ -61,24 +59,11 @@ export class Milestone extends Component {
         this.state.saveMilestone(e);
     }
 
-    handleOnMilestoneTitleChange(e)
+    handleOnChange(e)
     {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var milestone = this.state.milestone;
-        milestone.description = target.value;
-        this.setState({ milestone: milestone });
-    }
-
-    handleOnMilestoneDateChange(e)
-    {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var milestone = this.state.milestone;
-        milestone.approximateDate = target.value;
-        this.setState({ milestone: milestone });
+        let miletstone = this.state.milestone;
+        miletstone[e.target.name] = e.target.value;
+        this.setState({ miletstone: miletstone });
     }
 
     render() {

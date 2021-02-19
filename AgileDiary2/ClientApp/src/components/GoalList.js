@@ -32,6 +32,7 @@ export class GoalList extends Component {
                 <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
                 <Button outline  size="sm" color="primary" onClick={()=>this.createGoal()}>Create goal</Button>
                 <Button outline  size="sm" color="danger" onClick={()=>this.deleteGoal(this.state.activeTab)}>Delete goal</Button>
+                <Button outline  size="sm" color="info" onClick={()=>this.addMilestone()}>Add milestone</Button>
                 <Collapse isOpen={this.state.isOpen}>
                     <Nav tabs>
                         {goals.map(goal =>
@@ -64,9 +65,7 @@ export class GoalList extends Component {
                                     <Col sm="5">
                                         <Label>Milestones</Label>
                                         {goal.milestones.map(m => 
-                                            <Milestone milestone={m}
-                                            onChange={() => this.handleOnMilestoneTitleChange()} blur={() => this.saveMilestone()}
-                                            />
+                                            <Milestone milestone={m} blur={() => this.saveMilestone()} />
                                         )}
                                     </Col>
                                 </Row>                            
@@ -123,32 +122,19 @@ export class GoalList extends Component {
         }
     }
 
-    handleOnMilestoneTitleChange(e)
+    async addMilestone()
     {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var goalId = targetId.split('_')[0];
-        var milestoneId = targetId.split('_')[1];
         var goals = this.state.goals;
-        var goal = goals.filter(goal => goal.goalId === goalId)[0];
-        var milestones = goal.milestones;
-        var milestone = milestones.filter(milestone => milestone.milestoneId === milestoneId)[0];
-        milestone.description = target.value;
-        milestones[milestoneId] = milestone;
-        goal.milestones = milestones;
-        goals[goalId] = goal;
-        this.setState({ goals: goals });
+        var goal = goals.filter(goal => goal.goalId === this.state.activeTab)[0];
+        goal.milestones.push({title:"New milestone"});
+        this.editGoal(goal);
+        this.setState({goals: goals});
     }
 
     saveMilestone(e)
     {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var goalId = targetId.split('_')[0];
         var goals = this.state.goals;
-        var goal = goals.filter(goal => goal.goalId === goalId)[0];
+        var goal = goals.filter(goal => goal.goalId === this.state.activeTab)[0];
         this.editGoal(goal);
     }
 
