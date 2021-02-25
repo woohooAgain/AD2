@@ -25,7 +25,7 @@ namespace AgileDiary2.Controllers
         [Route("list/{sprintId}")]
         public IEnumerable<Goal> List(string sprintId)
         {
-            var goals = _context.Goals.Where(s => s.SprintId.ToString() == sprintId);
+            var goals = _context.Goals.Include(g => g.Milestones).Where(s => s.SprintId.ToString() == sprintId);
             return goals;
         }
 

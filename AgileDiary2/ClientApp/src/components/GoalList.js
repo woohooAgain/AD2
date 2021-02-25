@@ -20,6 +20,10 @@ export class GoalList extends Component {
         this.setState({ isOpen: !this.state.isOpen, collapseButtonName:buttonName });
     }
 
+    componentDidMount() {
+        this.populateGoalList();
+    }
+
     renderGoalList(goals) {
         const toggle = tab => {
             if (this.state.activeTab !== tab) {
@@ -65,7 +69,7 @@ export class GoalList extends Component {
                                     <Col sm="5">
                                         <Label>Milestones</Label>
                                         {goal.milestones.map(m => 
-                                            <Milestone milestone={m} blur={() => this.saveMilestone()} />
+                                            <Milestone milestone={m} blur={() => this.saveMilestone()} remove ={(milestone) => this.removeMilestone(milestone)} />
                                         )}
                                     </Col>
                                 </Row>                            
@@ -128,7 +132,6 @@ export class GoalList extends Component {
         var goal = goals.filter(goal => goal.goalId === this.state.activeTab)[0];
         goal.milestones.push({title:"New milestone"});
         this.editGoal(goal);
-        this.setState({goals: goals});
     }
 
     saveMilestone(e)
@@ -136,6 +139,14 @@ export class GoalList extends Component {
         var goals = this.state.goals;
         var goal = goals.filter(goal => goal.goalId === this.state.activeTab)[0];
         this.editGoal(goal);
+    }
+
+    removeMilestone(milestone)
+    {
+        var goals = this.state.goals;
+        let goal = goals.filter(goal => goal.goalId === milestone.goalId)[0];
+        goal.milestones = goal.milestones.filter(m => m.myTaskId !== milestone.myTaskId);
+        this.setState({ goals: goals });
     }
 
     handleOnChange(e)
@@ -169,6 +180,7 @@ export class GoalList extends Component {
             })
         });
         await response.json();
+        await this.populateGoalList();
     }
 
     render() {

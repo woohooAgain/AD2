@@ -67,10 +67,10 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpDelete]
-        [Route("delete")]
-        public bool Delete([FromBody]string taskId)
+        [Route("delete/{taskId}")]
+        public bool Delete(int taskId)
         {
-            var taskToDelete = _context.Tasks.First(s => s.MyTaskId.Equals(new Guid(taskId)));
+            var taskToDelete = _context.Tasks.First(s => s.MyTaskId.Equals(taskId));
             _context.Remove(taskToDelete);
             _context.SaveChanges();
             return true;
