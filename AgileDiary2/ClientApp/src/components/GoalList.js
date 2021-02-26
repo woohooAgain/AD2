@@ -52,7 +52,7 @@ export class GoalList extends Component {
                         {goals.map(goal =>
                             <TabPane key={goal.goalId} tabId={goal.goalId} >
                                 <Row>
-                                    <Col sm="7">
+                                    <Col sm="6">
                                         <Label for="title">Title</Label>
                                         <Input id={`title_${goal.goalId}`} placeholder="Goal's title" defaultValue={goal.title} name="title"
                                             onChange={this.handleOnChange}  onBlur={() => this.saveGoal(goal.goalId)}
@@ -66,7 +66,7 @@ export class GoalList extends Component {
                                             onChange={this.handleOnChange} onBlur={() => this.saveGoal(goal.goalId)}
                                         />
                                     </Col>
-                                    <Col sm="5">
+                                    <Col sm="6">
                                         <Label>Milestones</Label>
                                         {goal.milestones.map(m => 
                                             <Milestone milestone={m} blur={() => this.saveMilestone()} remove ={(milestone) => this.removeMilestone(milestone)} />

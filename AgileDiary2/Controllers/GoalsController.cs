@@ -34,7 +34,8 @@ namespace AgileDiary2.Controllers
         public string Post([FromBody]Goal goal)
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var creator = new Guid(currentUser); goal.Milestones = new List<MyTask>
+            var creator = new Guid(currentUser); 
+            goal.Milestones = new List<MyTask>
                 {
                     new MyTask
                     {
@@ -94,6 +95,19 @@ namespace AgileDiary2.Controllers
         [Route("edit")]
         public Goal Put([FromBody]Goal goal)
         {
+            var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var creator = new Guid(currentUser);
+            foreach (var m in goal.Milestones)
+            {
+                if (m.Creator == null || m.Creator == default(Guid))
+                {
+                    m.Creator = creator;
+                }
+                if (m.EstimatedDate == null || m.EstimatedDate == default(DateTime))
+                {
+                    m.EstimatedDate = DateTime.Now;
+                }
+            }
             _context.Update(goal);
             _context.SaveChanges();
             return _context.Goals.First(t => t.GoalId.Equals(goal.GoalId));

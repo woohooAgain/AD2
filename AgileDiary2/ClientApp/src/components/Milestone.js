@@ -11,6 +11,7 @@ export class Milestone extends Component {
 
         this.handleOnChange = this.handleOnChange.bind(this);
         this.removeMilestone = this.removeMilestone.bind(this);
+        this.completeMilestone = this.completeMilestone.bind(this);
     }
 
     componentDidMount() {
@@ -40,17 +41,20 @@ export class Milestone extends Component {
             <div>
                 <FormGroup>                                    
                     <Row>
-                        <Col sm="6">
+                        <Col sm="5">
                             <Input id={`${this.state.milestone.goalId}_${this.state.milestone.myTaskId}_text`} placeholder="Default milestone" defaultValue={this.state.milestone.title} name="title"
                             onChange={this.handleOnChange} onBlur={()=>this.saveMilestone()}/>
-                        </Col>
-                        <Col sm="1">
-                            <Button close onClick={() => this.removeMilestone(this.state.milestone.myTaskId)}></Button>
                         </Col>
                         <Col sm="5">
                             <Input type="date" id={`${this.state.milestone.goalId}_${this.state.milestone.myTaskId}_date`} defaultValue={this.mapDate(this.state.milestone.estimatedDate)}  name="estimatedDate"
                             onChange={this.handleOnChange} onBlur={()=>this.saveMilestone()}/>
-                        </Col>                    
+                        </Col>      
+                        <Col sm="1">
+                            <Button close onClick={() => this.completeMilestone(this.state.milestone.myTaskId)}><span>+</span></Button>
+                        </Col>
+                        <Col sm="1">
+                            <Button close onClick={() => this.removeMilestone(this.state.milestone.myTaskId)}></Button>
+                        </Col>                                                          
                     </Row>
                 </FormGroup>
             </div>
@@ -73,6 +77,25 @@ export class Milestone extends Component {
                 'Content-Type': 'application/json', }
         });
         this.state.removeMilestone(milestone);
+    }
+
+    async completeMilestone() {
+        let milestone = this.state.milestone;
+        const token = await authService.getAccessToken();
+        await fetch(`task/complete/${milestone.myTaskId}`, {
+            method: 'PUT',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', }
+        });
+        let taskResponse = await fetch(`task/get/${milestone.myTaskId}`, {
+            method: 'GET',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
+                'Content-Type': 'application/json', }
+        })
+        let completedTask = await taskResponse.json();
+        this.setState({milestone:completedTask});
     }
 
     handleOnChange(e)

@@ -21,6 +21,13 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpGet]
+        [Route("get/{taskId}")]
+        public MyTask Get(int taskId)
+        {
+            return _context.Tasks.FirstOrDefault(t => t.MyTaskId.Equals(taskId));
+        }
+
+        [HttpGet]
         [Route("listNearest")]
         public IEnumerable<MyTask> List()
         {
@@ -50,6 +57,20 @@ namespace AgileDiary2.Controllers
             _context.Update(task);
             _context.SaveChanges();
             return _context.Tasks.First(t => t.MyTaskId.Equals(task.MyTaskId));
+        }
+
+        [HttpPut]
+        [Route("complete/{taskId}")]
+        public void Complete(int taskId)
+        {
+            var task = _context.Tasks.FirstOrDefault(t => t.MyTaskId.Equals(taskId));
+            if (task != null)
+            {
+                task.Status = Status.Finished;
+                task.CompleteDate = DateTime.Now;
+                _context.Update(task);
+                _context.SaveChanges();
+            }            
         }
 
         [HttpPost]
