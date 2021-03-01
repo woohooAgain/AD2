@@ -39,7 +39,7 @@ export class Milestone extends Component {
     renderSprintFields() {        
         return (
             <div>
-                <FormGroup>                                    
+                <FormGroup>                           
                     <Row>
                         <Col sm="5">
                             <Input id={`${this.state.milestone.goalId}_${this.state.milestone.myTaskId}_text`} placeholder="Default milestone" defaultValue={this.state.milestone.title} name="title"
@@ -50,7 +50,7 @@ export class Milestone extends Component {
                             onChange={this.handleOnChange} onBlur={()=>this.saveMilestone()}/>
                         </Col>      
                         <Col sm="1">
-                            <Button close onClick={() => this.completeMilestone(this.state.milestone.myTaskId)}><span>+</span></Button>
+                            <Button close onClick={() => this.completeMilestone(this.state.milestone.myTaskId)}><span>&#10003;</span></Button>
                         </Col>
                         <Col sm="1">
                             <Button close onClick={() => this.removeMilestone(this.state.milestone.myTaskId)}></Button>
