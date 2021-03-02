@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { Button, Input } from 'reactstrap';
 import { ItemCreator } from './ItemCreator';
-import { Collapse, NavLink } from 'reactstrap';
+import { Collapse, NavLink, Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 export class TaskList extends Component {
     static displayName = TaskList.name;
@@ -55,15 +54,18 @@ export class TaskList extends Component {
             mode: 'click',
             blurToSave: true,
             afterSaveCell: this.afterSaveCell.bind(this)
-          };
-
+        };
+        let itemCreatorProps = {
+            value: this.state.newTitle,
+            onAddClick: () => this.handleAddTask(),
+            onTitleChange: () => this.handleNewTitleChange(),
+            placeholder: "New task's title"
+        }
         return (
             <div>
-                <h4 id="taskLabel">All tasks</h4>
-                <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
-                <NavLink tag={Link} className="text-dark" to={`/task/list`}>Inspect all</NavLink>
+                <h4 id="taskLabel">All tasks  <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button></h4>
                 <Collapse isOpen={this.state.isOpen}>
-                    <table className = 'table table-striped' aria-labelledby='tabelLabel'>
+                    <Table striped>
                         <thead>
                             <tr>
                                 <th>Title</th>
@@ -81,7 +83,7 @@ export class TaskList extends Component {
                                         />
                                     </td>
                                     <td>
-                                        <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.planDate)}
+                                        <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.estimatedDate)}
                                                 onChange={() => this.editTaskPlanDate()} onBlur={() => this.saveTask()}
                                         />
                                     </td>
@@ -100,35 +102,30 @@ export class TaskList extends Component {
                                                 )}
                                         </Input>
                                     </td>
-                                    <td><button id={`delete_${task.myTaskId}`} type="button" onClick={() => this.deleteTask()}>Delete</button></td>
-                                    <td><button id={`changeStatus_${task.myTaskId}`} type="button" onClick={() => this.completeTask(task.myTaskId)}>{this.counteChangeStatusNameButton(task.completed)}</button></td>
+                            
+                                    
+                                    <td><Button close onClick={() => this.completeTask(task.myTaskId)}><span>&#10003;</span></Button></td>
+                                    <td><Button close onClick={() => this.deleteTask(task.myTaskId)}></Button></td>
                                 </tr>
                             )}
                             <tr>
                             </tr>
                         </tbody> 
-                    </table>
-                    <ItemCreator value= {this.state.newTitle} onClick={() => this.handleAddTask()} onChange={() => this.handleNewTitleChange()} />
+                    </Table>
+                    <ItemCreator {...itemCreatorProps} />
                 </Collapse>
             </div>
         )
     }
 
-    async deleteTask(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var taskId = targetId.split('_')[1];
-
+    async deleteTask(taskId) {
         const token = await authService.getAccessToken();
-        var body = taskId;
-        const response = await fetch("task/delete", {
+        const response = await fetch(`task/delete/${taskId}`, {
             method: 'DELETE',
             headers: !token ? {} : {
                 'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(body)
         });
         await response.json();
         var tasks = this.state.tasks;
@@ -270,6 +267,7 @@ export class TaskList extends Component {
 
     handleAddTask() {
         this.createTask({ title: this.state.newTitle });
+        this.setState({ newTitle: '' });
     }
 
     async createTask(task) {

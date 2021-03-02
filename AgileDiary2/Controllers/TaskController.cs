@@ -32,13 +32,13 @@ namespace AgileDiary2.Controllers
         public IEnumerable<MyTask> List()
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var guidUser = new Guid(currentUser);
             //var tasks = _context.Tasks.Where(s => s.Creator.ToString() == currentUser);
             //Get tasks with plan date < this week end
             DateTime baseDate = DateTime.Today;
             var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
             var thisWeekEnd = thisWeekStart.AddDays(7).AddSeconds(-1);
-            //return tasks.Where(t => t.EstimatedDate < thisWeekEnd && !t.Completed);
-            return new List<MyTask>();
+            return _context.Tasks.Where(t => t.EstimatedDate < thisWeekEnd && t.Status != Status.Finished && t.Creator == guidUser);
         }
 
         [HttpGet]
@@ -79,9 +79,9 @@ namespace AgileDiary2.Controllers
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //task.MyTaskId = Guid.NewGuid();
-            //task.Creator = new Guid(currentUser);
+            task.Creator = new Guid(currentUser);
             task.EstimatedDate = DateTime.Now.Date;
-
+            task.Status = Status.Planned;
             _context.Tasks.Add(task);
             _context.SaveChanges();
             return task.MyTaskId.ToString();
