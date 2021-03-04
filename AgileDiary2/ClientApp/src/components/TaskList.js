@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import { Button, Input } from 'reactstrap';
+import { Button, ButtonGroup, Input } from 'reactstrap';
 import { ItemCreator } from './ItemCreator';
 import { Collapse, NavLink, Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
@@ -11,6 +11,8 @@ export class TaskList extends Component {
     constructor(props) {
         super(props);
         this.state = { goals: this.props.goals, tasks: [], loading: false, isOpen: true, collapseButtonName:"Collapse" };
+    
+        this.handleOnChange = this.handleOnChange.bind(this);        
     }
 
     collapse() {
@@ -22,39 +24,7 @@ export class TaskList extends Component {
         this.populateTaskList();
     }
 
-    async afterSaveCell (row, cellName, cellValue) {
-        const token = await authService.getAccessToken();
-        var newGoal = row.goalTitle;
-        if (newGoal == "Common task") {
-            goalId = "";
-        }
-        else {
-            var goalId = this.state.goals.filter(goal => goal.title === newGoal)[0].goalId;
-        }
-        const response = await fetch("task/edit", {
-            method: 'PUT',
-            headers: !token ? {} : {
-                'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
-                'Content-Type': 'application/json', },
-            body: JSON.stringify({
-                myTaskId: row.myTaskId,
-                creator: row.creator,
-                planDate:row.planDate,
-                completed: row.completed,
-                goalId: goalId,
-                priority: row.priority,
-                title: row.title
-            })
-        });
-        await response.json();
-    }
-
     renderTaskList(tasks) {
-        const cellEditProp = {
-            mode: 'click',
-            blurToSave: true,
-            afterSaveCell: this.afterSaveCell.bind(this)
-        };
         let itemCreatorProps = {
             value: this.state.newTitle,
             onAddClick: () => this.handleAddTask(),
@@ -78,23 +48,21 @@ export class TaskList extends Component {
                             {tasks.map(task =>
                                 <tr key={task.myTaskId}>
                                     <td>
-                                        <Input id={`taskTitle_${task.myTaskId}`} placeholder="Task's title" value={task.title}
-                                                onChange={() => this.editTaskTitle()} onBlur={() => this.saveTask()}
+                                        <Input value={task.title} name="title"
+                                                onChange={(event) => this.handleOnChange(task.myTaskId, event)} onBlur={() => this.saveTask(task.myTaskId)}
                                         />
                                     </td>
                                     <td>
-                                        <Input type="date" id={`taskPlanDate_${task.myTaskId}`} placeholder="Task's plan date" value={this.mapDate(task.estimatedDate)}
-                                                onChange={() => this.editTaskPlanDate()} onBlur={() => this.saveTask()}
+                                        <Input type="date" value={this.mapDate(task.estimatedDate)} name="estimatedDate" 
+                                                onChange={(event) => this.handleOnChange(task.myTaskId, event)} onBlur={() => this.saveTask(task.myTaskId)}
                                         />
                                     </td>
                                     <td>
-                                        <Input type="date" id={`taskCompleteDate_${task.myTaskId}`} placeholder="Task's complete date" value={this.mapDate(task.completeDate)}
-                                                readOnly
-                                        />
+                                        <Input type="date" value={this.mapDate(task.completeDate)} name="completeDate" readOnly />
                                     </td>
                                     <td>
                                         <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" /*value={this.countGoalForTask(task.goalId)}*/
-                                                onChange={() => this.editTaskGoal()} onBlur={() => this.saveTask()}>
+                                                onChange={(event) => this.editTaskGoal(task.myTaskId, event)} onBlur={() => this.saveTask(task.myTaskId)}>
                                                 
                                                 <option>{this.state.goals.filter(goal => goal.goalId === task.goalId).map(goal => goal.title)}</option>
                                                 {this.state.goals.map(goal => 
@@ -102,9 +70,12 @@ export class TaskList extends Component {
                                                 )}
                                         </Input>
                                     </td>
-                            
-                                    
-                                    <td><Button close onClick={() => this.completeTask(task.myTaskId)}><span>&#10003;</span></Button></td>
+                                    <td>
+                                        <ButtonGroup>
+                                            <Button close onClick={() => this.completeTask(task.myTaskId)}><span>&#10003;</span></Button>
+                                        </ButtonGroup>
+                                    </td>
+                                    <td></td>
                                     <td><Button close onClick={() => this.deleteTask(task.myTaskId)}></Button></td>
                                 </tr>
                             )}
@@ -116,6 +87,14 @@ export class TaskList extends Component {
                 </Collapse>
             </div>
         )
+    }
+
+    handleOnChange(taskId, e)
+    {
+        var tasks = this.state.tasks;
+        var task = tasks.filter(task => task.myTaskId === taskId)[0];
+        task[e.target.name] = e.target.value;
+        this.setState({ tasks: tasks });
     }
 
     async deleteTask(taskId) {
@@ -140,14 +119,9 @@ export class TaskList extends Component {
         }
     }
 
-    async editTaskGoal(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
+    async editTaskGoal(taskId, e) {
 
-        var targetId = target.id;
-        var taskId = targetId.split('_')[1];
-
-        var newGoal = target.value;
+        var newGoal = e.target.value;
         if (newGoal == "Common task") {
             newGoal = "";
         }
@@ -161,39 +135,7 @@ export class TaskList extends Component {
         this.setState({tasks: tasks});
     }
 
-    async editTaskPlanDate(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-
-        var targetId = target.id;
-        var taskId = targetId.split('_')[1];
-
-        var newPlanDate = target.value;
-        var tasks = this.state.tasks;
-        var task = tasks.filter(task => task.myTaskId === taskId)[0];
-        task.planDate = newPlanDate;
-        this.setState({tasks: tasks});
-    }
-
-    async editTaskTitle(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-
-        var targetId = target.id;
-        var taskId = targetId.split('_')[1];
-
-        var newTitle = target.value;
-        var tasks = this.state.tasks;
-        var task = tasks.filter(task => task.myTaskId === taskId)[0];
-        task.title = newTitle;
-        this.setState({tasks: tasks});
-    }
-
-    async saveTask(e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-        var targetId = target.id;
-        var taskId = targetId.split('_')[1];
+    async saveTask(taskId) {
         var tasks = this.state.tasks;
         var task = tasks.filter(task => task.myTaskId === taskId)[0];
         await this.editTask(task);
@@ -209,7 +151,8 @@ export class TaskList extends Component {
             body: JSON.stringify({
                 myTaskId: task.myTaskId,
                 creator: task.creator,
-                planDate:task.planDate,
+                estimatedDate:task.estimatedDate,
+                completeDate:task.completeDate,
                 completed: task.completed,
                 goalId: task.goalId,
                 priority: task.priority,
@@ -228,13 +171,13 @@ export class TaskList extends Component {
         await this.editTask(task);
         this.setState({tasks: tasks});
     }
-
-    counteChangeStatusNameButton(completed){
-        if (completed) {
-            return "Reopen";
-        }
-        else {
-            return "Complete";
+    
+    counteChangeStatusNameButton(status){
+        switch(status){
+            case 1:
+                return "&#8635;";
+            default:
+                return "&#10003;";
         }
     }    
 

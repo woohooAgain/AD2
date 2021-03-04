@@ -32,12 +32,11 @@ export class GoalList extends Component {
         }
         return (
             <div>
-                <h4 id="goalLabel">Goals in sprint</h4>
-                <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button>
+                <h4 id="goalLabel">Goals in sprint  <Button outline  size="sm" onClick={()=>this.collapse()}>{this.state.collapseButtonName}</Button></h4>                                
+                <Collapse isOpen={this.state.isOpen}>
                 <Button outline  size="sm" color="primary" onClick={()=>this.createGoal()}>Create goal</Button>
                 <Button outline  size="sm" color="danger" onClick={()=>this.deleteGoal(this.state.activeTab)}>Delete goal</Button>
                 <Button outline  size="sm" color="info" onClick={()=>this.addMilestone()}>Add milestone</Button>
-                <Collapse isOpen={this.state.isOpen}>
                     <Nav tabs>
                         {goals.map(goal =>
                             <NavItem>

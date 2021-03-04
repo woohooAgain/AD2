@@ -78,7 +78,6 @@ namespace AgileDiary2.Controllers
         public string Post([FromBody]MyTask task)
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //task.MyTaskId = Guid.NewGuid();
             task.Creator = new Guid(currentUser);
             task.EstimatedDate = DateTime.Now.Date;
             task.Status = Status.Planned;
