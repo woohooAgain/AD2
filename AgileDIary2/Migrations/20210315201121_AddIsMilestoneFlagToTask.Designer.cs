@@ -4,14 +4,16 @@ using AgileDiary2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AgileDiary2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210315201121_AddIsMilestoneFlagToTask")]
+    partial class AddIsMilestoneFlagToTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,7 +159,7 @@ namespace AgileDiary2.Migrations
                     b.Property<DateTime>("EstimatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GoalId")
+                    b.Property<int?>("GoalId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsMilestone")
@@ -479,9 +481,7 @@ namespace AgileDiary2.Migrations
                 {
                     b.HasOne("AgileDiary2.Models.Goal", null)
                         .WithMany("Milestones")
-                        .HasForeignKey("GoalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GoalId");
                 });
 
             modelBuilder.Entity("AgileDiary2.Models.Result", b =>

@@ -38,6 +38,18 @@ namespace AgileDiary2.Controllers
         public Sprint Get(string sprintId)
         {
             var result = _context.Sprints.Include(s => s.Goals).ThenInclude(g => g.Milestones).FirstOrDefault(s => s.SprintId.ToString() == sprintId);
+            foreach (var g in result.Goals)
+            {
+                var tasks = g.Milestones;
+                for (int i = 0; i < tasks.Count; i++)
+                {
+                    var t = tasks.ElementAt(i);
+                    if (!t.IsMilestone)
+                    {
+                        tasks.Remove(t);
+                    }
+                }
+            }
             return result;
         }
 
@@ -81,21 +93,24 @@ namespace AgileDiary2.Controllers
                         Title = "First step",
                         Creator = creator,
                         EstimatedDate = sprint.StartDate.AddDays(16),
-                        Status = Status.Planned
+                        Status = Status.Planned,
+                        IsMilestone = true
                     },
                     new MyTask
                     {
                         Title = "Second step",
                         Creator = creator,
                         EstimatedDate = sprint.StartDate.AddDays(32),
-                        Status = Status.Planned
+                        Status = Status.Planned,
+                        IsMilestone = true
                     },
                     new MyTask
                     {
                         Title = "Third step",
                         Creator = creator,
                         EstimatedDate = sprint.StartDate.AddDays(47),
-                        Status = Status.Planned
+                        Status = Status.Planned,
+                        IsMilestone = true
                     }
                 };
             }
@@ -119,13 +134,16 @@ namespace AgileDiary2.Controllers
         public bool Delete(string[] sprintIds)
         {
             var sprintsToDelete = new List<Sprint>(sprintIds.Length);
+            var goalsToDelete = new List<Goal>();
             foreach (var stringId in sprintIds)
             {
                 if (int.TryParse(stringId, out var id))
                 {
                     sprintsToDelete.Add(_context.Sprints.First(s => s.SprintId.Equals(id)));
+                    goalsToDelete.AddRange(_context.Goals.Where(g => g.SprintId == id));
                 }
             }
+            _context.RemoveRange(goalsToDelete);
             _context.RemoveRange(sprintsToDelete);
             _context.SaveChanges();
             return true;

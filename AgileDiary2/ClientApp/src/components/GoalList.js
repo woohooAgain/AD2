@@ -10,7 +10,7 @@ export class GoalList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { sprintId: this.props.sprintId, goals: this.props.goals, loading: false, activeTab: this.props.goals.length > 0 ? this.props.goals[0].goalId : null, isOpen: true, collapseButtonName:"Collapse"};
+        this.state = { sprintId: this.props.sprintId, goals: [], loading: true, isOpen: true, collapseButtonName:"Collapse"};
 
         this.handleOnChange = this.handleOnChange.bind(this);
     }
@@ -194,12 +194,17 @@ export class GoalList extends Component {
     }
 
     async populateGoalList() {
+        await this.refreshGoalList();
+        this.setState({ loading: false, activeTab: this.state.goals.length > 0 ? this.state.goals[0].goalId : null });
+    }
+
+    async refreshGoalList() {
         const token = await authService.getAccessToken();
         var url = `goals/list/${this.state.sprintId}`;
         const response = await fetch(url, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
-        this.setState({  goals: data, loading: false});
+        this.setState({ goals: data });
     }
 }

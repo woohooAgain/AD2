@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import { Button, ButtonGroup, Input } from 'reactstrap';
 import { ItemCreator } from './ItemCreator';
-import { Collapse, NavLink, Table } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Collapse, Table } from 'reactstrap';
+import formatter from './../helpers/Formatter';
 
 export class TaskList extends Component {
     static displayName = TaskList.name;
 
     constructor(props) {
         super(props);
-        this.state = { goals: this.props.goals, tasks: [], loading: false, isOpen: true, collapseButtonName:"Collapse" };
+        this.state = { goals: this.props.goals, tasks: [], loading: false, isOpen: true, collapseButtonName:"Collapse", sprintId: this.props.sprintId };
     
         this.handleOnChange = this.handleOnChange.bind(this);        
     }
@@ -53,12 +53,12 @@ export class TaskList extends Component {
                                         />
                                     </td>
                                     <td>
-                                        <Input type="date" value={this.mapDate(task.estimatedDate)} name="estimatedDate" 
+                                        <Input type="date" value={formatter.mapDate(task.estimatedDate)} name="estimatedDate" 
                                                 onChange={(event) => this.handleOnChange(task.myTaskId, event)} onBlur={() => this.saveTask(task.myTaskId)}
                                         />
                                     </td>
                                     <td>
-                                        <Input type="date" value={this.mapDate(task.completeDate)} name="completeDate" readOnly />
+                                        <Input type="date" value={formatter.mapDate(task.completeDate)} name="completeDate" readOnly />
                                     </td>
                                     <td>
                                         <Input type="select" id={`taskGoal_${task.myTaskId}`} placeholder="Select goal" /*value={this.countGoalForTask(task.goalId)}*/
@@ -179,27 +179,6 @@ export class TaskList extends Component {
             default:
                 return "&#10003;";
         }
-    }    
-
-    mapDate(date) {
-        if (date===null){
-            return null;
-        }
-        let a = new Date(Date.parse(date));
-        let year = a.getFullYear();
-        let month = a.getMonth() + 1;
-        let day = a.getDate();
-
-        // Creating a new Date (with the delta)
-        // const finalDate = new Date(year, month, day);
-        // return finalDate.toLocaleDateString().substr(0, 10);
-        if (month < 10) {
-            month = "0" + month;
-        }
-        if (day < 10) {
-            day = "0" + day;
-        }
-        return year + "-" + month + "-" + day;
     }
 
     handleNewTitleChange(e) {
@@ -221,7 +200,8 @@ export class TaskList extends Component {
                 'Authorization': `Bearer ${token}`, 'Accept': 'application/json',
                 'Content-Type': 'application/json', },
             body: JSON.stringify({
-                title: task.title
+                title: task.title,
+                goalId: this.state.goals[0].goalId
             })
         });
         await response.json();
@@ -241,7 +221,7 @@ export class TaskList extends Component {
 
     async populateTaskList() {
         const token = await authService.getAccessToken();
-        var url = `task/listNearest`;
+        var url = `task/listNearest/${this.state.sprintId}`;
         const response = await fetch(url, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });

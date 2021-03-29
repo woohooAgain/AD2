@@ -28,8 +28,8 @@ namespace AgileDiary2.Controllers
         }
 
         [HttpGet]
-        [Route("listNearest")]
-        public IEnumerable<MyTask> List()
+        [Route("listNearest/{sprintId}")]
+        public IEnumerable<MyTask> List(int sprintId)
         {
             var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var guidUser = new Guid(currentUser);
@@ -38,7 +38,8 @@ namespace AgileDiary2.Controllers
             DateTime baseDate = DateTime.Today;
             var thisWeekStart = baseDate.AddDays(-(int)baseDate.DayOfWeek);
             var thisWeekEnd = thisWeekStart.AddDays(7).AddSeconds(-1);
-            return _context.Tasks.Where(t => t.EstimatedDate < thisWeekEnd && t.Status != Status.Finished && t.Creator == guidUser);
+            var possibleGoals = _context.Goals.Where(g => g.SprintId.Equals(sprintId)).Select(g => g.GoalId).ToList();
+            return _context.Tasks.Where(t => possibleGoals.Contains(t.GoalId) && t.EstimatedDate < thisWeekEnd && t.Status != Status.Finished && t.Creator == guidUser && !t.IsMilestone);
         }
 
         [HttpGet]

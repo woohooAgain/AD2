@@ -26,6 +26,18 @@ namespace AgileDiary2.Controllers
         public IEnumerable<Goal> List(string sprintId)
         {
             var goals = _context.Goals.Include(g => g.Milestones).Where(s => s.SprintId.ToString() == sprintId);
+            foreach (var g in goals)
+            {
+                var tasks = g.Milestones;
+                for (int i = 0; i < tasks.Count; i++)
+                {
+                    var t = tasks.ElementAt(i);
+                    if (!t.IsMilestone)
+                    {
+                        tasks.Remove(t);
+                    }
+                }
+            }
             return goals;
         }
 
@@ -106,6 +118,10 @@ namespace AgileDiary2.Controllers
                 if (m.EstimatedDate == null || m.EstimatedDate == default(DateTime))
                 {
                     m.EstimatedDate = DateTime.Now;
+                }
+                if (!m.IsMilestone)
+                {
+                    m.IsMilestone = true;
                 }
             }
             _context.Update(goal);

@@ -71,8 +71,8 @@ export class Sprint extends Component {
                             value={finishDate} />
                     </Col>
                 </Row>
-                <GoalList goals={this.state.sprint.goals} sprintId={this.state.sprintId}/>
-                <TaskList goals={this.state.sprint.goals} />
+                <GoalList  sprintId={this.state.sprintId}/>
+                <TaskList goals={this.state.sprint.goals} sprintId={this.state.sprintId}/>
                 <ResultList sprintId={this.state.sprintId} />
             </Form>
         );

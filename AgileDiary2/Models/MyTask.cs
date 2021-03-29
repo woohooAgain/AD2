@@ -13,9 +13,10 @@ namespace AgileDiary2.Models
         public string Condition { get; set; }
         public DateTime EstimatedDate { get; set; }
         public DateTime? CompleteDate { get; set; }
-        public int? GoalId { get; set; }
+        public int GoalId { get; set; }
         public Priority Priority { get; set; }
         public Status Status { get; set; }
+        public bool IsMilestone { get; set; }
     }
 
     public enum Status
